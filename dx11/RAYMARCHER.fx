@@ -32,6 +32,8 @@ VS_OUT VS(VS_IN input)
 
 float3 mouse;
 
+
+
 float3 UVtoEYE(float2 UV){
 	return normalize( mul(float4(mul(float4((UV.xy*2-1)*float2(1,-1),0,1),tPI).xy,1,0),tVI).xyz);
 }
@@ -45,6 +47,7 @@ float smin( float a, float b, float k )
 
 float box (float3 p){
 //	p = 1 - frac(p)*2;
+//	p = abs(p) - float3(.05,.5,.05)+  (sin(10*p.x)*sin(10*p.y)*sin(10*p.z))*.03;
 	p = abs(p) - float3(.25,.25,.25);
 	return max(p.x,max(p.y,p.z));
 }
@@ -54,66 +57,89 @@ float plane (float3 p){
 }
 
 float sphere (float3 p){
-//	p = 1 - frac(p)*2;
-//	p+=mouse;
-	return (length(p+mouse) - .5 ) +  (sin(20*p.x)*sin(20*p.y)*sin(20*p.z))*.1;
-}
 
-float opRep( float3 p, float3 c )
-{
-    float3 q = fmod(p,c)*c;
-    return lerp(box(q),plane(q)+.5,.1);
+	//Repeat
+//	p = 1 - frac(p)*2;
+
+	// Displaced Sphere + Mouse
+//	p+=mouse;
+//	return (length(p+mouse) - .5 ) +  (sin(10*p.x)*sin(10*p.y)*sin(10*p.z))*.1;
+
+	// Simple Sphere
+	return (length(p) - 1.5 )*.2;
 }
 
 // Distance field function
-float map (float3 p)
+float sceneSDF (float3 p)
 {
+	float3 p1 = p;
 //	return lerp(box(p),sphere(p),.5);
+
 //	return smin(box(p),sphere(p),.2);
-	return max(box(p),-sphere(p));
-//	return opRep(p,1);
+
+//	return max(box(p),sphere(p));
+
+	//Domain Distortion
+	p1.xyz += 1.000*sin(  2.0*p1.yzx )*.9;
+    p1.xyz += 0.500*sin(  4.0*p1.yzx )*.9;
+    p1.xyz += 0.250*sin(  8.0*p1.yzx )*.9;
+    p1.xyz += 0.050*sin( 16.0*p1.yzx )*.9;
+//	return sphere(p);
+	return smin(sphere(p+mouse),sphere(p1),.2);
 }
+
 float3 calcNormal( in float3 pos )
 {
 	float3 eps = float3( 0.0001, 0.0, 0.0 );
 	float3 nor = float3(
-	    map(pos+eps.xyy) - map(pos-eps.xyy),
-	    map(pos+eps.yxy) - map(pos-eps.yxy),
-	    map(pos+eps.yyx) - map(pos-eps.yyx) );
+	sceneSDF(pos+eps.xyy) - sceneSDF(pos-eps.xyy),
+	sceneSDF(pos+eps.yxy) - sceneSDF(pos-eps.yxy),
+	sceneSDF(pos+eps.yyx) - sceneSDF(pos-eps.yyx) );
 	return normalize(nor);
 }
-float raymarch (in float3 ro, in float3 rd, inout float3 p)
-{
-	float t = 0.0;
-	for (int i = 0 ; i < 64 ; i++)
-	{
-		p = ro + rd*t;
-		float d = map (p);
-		t += d * 0.5;
-	}
-	return t;
-}
 
+static const float MAX_DIST = 15.0;
+static const float EPSILON = .001;
+
+float raymarch (in float3 eye, in float3 dir)
+{
+	float t = 1.0;
+	float dist = 1.0;
+	for (uint i = 0 ; i < 512 ; i++)
+	{
+//		p = ro + rd*t;
+
+
+		if(dist < EPSILON || dist > MAX_DIST) break;
+		
+		dist = sceneSDF (eye + dir*t);
+		t += dist * 0.5;
+	}
+//	if( t>MAX_DIST ) t=-1.0;
+	return t;
+
+}
 
 float4 PS(VS_OUT input): SV_Target
 {	
 	
 	float4 col;
 	
-	float3 p;
+//	float3 p;
 	// Ray Origin
-	float3 ro = tVI[3].xyz;
+	float3 eye = tVI[3].xyz;
 
 	// Ray Direction
-	float3 rd = UVtoEYE(input.uv.xy);
-
-	float d = raymarch(ro,rd,p);
+	float3 dir = UVtoEYE(input.uv.xy);
 	
+//	float dist = shortestDistanceToSurface(eye, dir, MIN_DIST, MAX_DIST);
+	float dist = raymarch(eye,dir);
+	float3 p = eye + dist * dir;
 //	float3 normal = 1;
  	float3 normal = calcNormal(p);
-
 	
-	float fog = 1 - 1/(1+d*d*.15);
+	
+	float fog = 1 - 1/(1+dist*.25);
 //	col = float4(length(p)*fog + (1 - fog)*p,1); 
 //	float4 col = float4(p*fog + (1 - fog),1); 
 
@@ -133,15 +159,17 @@ float4 PS(VS_OUT input): SV_Target
 	float KrMin = 0;
 	float Kr =1;
 	float FresExp = 3;
-	float3 reflVect = reflect(rd,normal);
+	float3 reflVect = reflect(dir,normal);
 	float vdn = -saturate(dot(reflVect,normal));
 	float fresRefl = KrMin + (Kr-KrMin) * pow(1-abs(vdn),FresExp);	
 	
 	
 //	col = lerp(float4(.5,.5,.5,0)+float4(min(normal,0),1)+fresRefl*float4(1,0,0,0),float4(.5,0,1,0),fog);
 	col = lerp(float4(.9,.9,.9,0)+fresRefl*float4(1,1,1,0),float4(.5,0,1,0),fog);
-//	col = float4(1,1,1,0)+float4(min(normal,0)+fresRefl*.1,1);
+
+//	col = fog;
 	
+//	return float4(p,1);
     return col;
 }
 
@@ -154,7 +182,7 @@ technique10 Constant
 	pass P0
 	{
 		SetVertexShader( CompileShader( vs_4_0, VS() ) );
-		SetPixelShader( CompileShader( ps_4_0, PS() ) );
+		SetPixelShader( CompileShader( ps_5_0, PS() ) );
 	}
 }
 

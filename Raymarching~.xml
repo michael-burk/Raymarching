@@ -13,6 +13,8 @@
    </PIN>
    <PIN pinname="mouseXYZ" visible="1">
    </PIN>
+   <PIN pinname="Query" visible="1">
+   </PIN>
    </NODE>
    <NODE systemname="Renderer (DX11 TempTarget)" filename="%VVVV%\packs\dx11\nodes\plugins\VVVV.DX11.Nodes.dll" nodename="Renderer (DX11 TempTarget)" componentmode="Hidden" id="1">
    <BOUNDS type="Node" left="2385" top="3240" width="100" height="100">
@@ -55,12 +57,14 @@
    <NODE systemname="Camera (Transform Orbit)" filename="%VVVV%\lib\packs\VL.EditingFramework.0.49.229-g30fb9f349f\vvvv\nodes\modules\Camera (Transform Orbit).v4p" nodename="Camera (Transform Orbit)" componentmode="Hidden" id="9">
    <BOUNDS type="Node" left="4395" top="2880" width="100" height="100">
    </BOUNDS>
+   <PIN pinname="Near Plane" slicecount="1" values="0.1">
+   </PIN>
+   <PIN pinname="Far Plane" slicecount="1" values="100">
+   </PIN>
    </NODE>
    <LINK srcnodeid="9" srcpinname="View" dstnodeid="1" dstpinname="View">
    </LINK>
    <LINK srcnodeid="9" srcpinname="Projection" dstnodeid="1" dstpinname="Projection">
-   </LINK>
-   <LINK srcnodeid="1" srcpinname="Buffers" dstnodeid="2" dstpinname="Texture In">
    </LINK>
    <NODE systemname="Mouse (Devices Window)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="Mouse (Devices Window)" componentmode="Hidden" id="10">
    <BOUNDS type="Node" left="3645" top="570" width="100" height="100">
@@ -121,15 +125,49 @@
    <NODE systemname="Damper (Animation)" nodename="Damper (Animation)" componentmode="Hidden" id="15">
    <BOUNDS type="Node" left="3825" top="1095" width="100" height="100">
    </BOUNDS>
-   <PIN pinname="Go To Position" visible="1">
+   <PIN pinname="Go To Position" visible="1" slicecount="1" values="0">
    </PIN>
    <PIN pinname="Position Out" visible="1">
    </PIN>
    <PIN pinname="FilterTime" slicecount="1" values="2">
    </PIN>
    </NODE>
-   <LINK srcnodeid="10" srcpinname="PositionXY" dstnodeid="15" dstpinname="Go To Position">
-   </LINK>
    <LINK srcnodeid="15" srcpinname="Position Out" dstnodeid="13" dstpinname="XY">
+   </LINK>
+   <NODE systemname="FXAA11 (DX11.TextureFX)" filename="%VVVV%\packs\dx11\nodes\texture11\Filter\FXAA11.tfx" nodename="FXAA11 (DX11.TextureFX)" componentmode="Hidden" id="16">
+   <BOUNDS type="Node" left="5145" top="3930" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Texture In" visible="1">
+   </PIN>
+   <PIN pinname="Texture Out" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="1" srcpinname="Buffers" dstnodeid="16" dstpinname="Texture In">
+   </LINK>
+   <LINK srcnodeid="16" srcpinname="Texture Out" dstnodeid="2" dstpinname="Texture In">
+   </LINK>
+   <NODE systemname="TimeStamp (DX11.Query)" filename="%VVVV%\packs\dx11\nodes\plugins\VVVV.DX11.Nodes.dll" nodename="TimeStamp (DX11.Query)" componentmode="Hidden" id="17">
+   <BOUNDS type="Node" left="7140" top="3405" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Query Source" visible="1">
+   </PIN>
+   <PIN pinname="Time" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="0" srcpinname="Query" dstnodeid="17" dstpinname="Query Source">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="18">
+   <BOUNDS type="Box" left="7155" top="4035" width="795" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="7155" top="4035" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="17" srcpinname="Time" dstnodeid="18" dstpinname="Y Input Value">
+   </LINK>
+   <LINK srcnodeid="10" srcpinname="PositionXY" dstnodeid="15" dstpinname="Go To Position">
    </LINK>
    </PATCH>
