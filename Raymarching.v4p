@@ -31,6 +31,8 @@
    </PIN>
    <PIN pinname="Background Color" slicecount="1" values="|0.00000,0.00000,0.00000,1.00000|">
    </PIN>
+   <PIN pinname="Target Format" slicecount="1" values="R8G8B8A8_UNorm">
+   </PIN>
    </NODE>
    <LINK srcnodeid="0" srcpinname="Layer" dstnodeid="1" dstpinname="Layer">
    </LINK>
@@ -61,6 +63,8 @@
    </PIN>
    <PIN pinname="Far Plane" slicecount="1" values="100">
    </PIN>
+   <PIN pinname="Initial Distance" slicecount="1" values="5">
+   </PIN>
    </NODE>
    <LINK srcnodeid="9" srcpinname="View" dstnodeid="1" dstpinname="View">
    </LINK>
@@ -77,7 +81,7 @@
    </BOUNDS>
    <PIN pinname="X" visible="1">
    </PIN>
-   <PIN pinname="Y" visible="1" slicecount="1" values="-0.44">
+   <PIN pinname="Y" visible="1" slicecount="1" values="0">
    </PIN>
    <PIN pinname="XYZ" visible="1">
    </PIN>
@@ -141,6 +145,8 @@
    </PIN>
    <PIN pinname="Texture Out" visible="1">
    </PIN>
+   <PIN pinname="Enabled" slicecount="1" values="1">
+   </PIN>
    </NODE>
    <LINK srcnodeid="1" srcpinname="Buffers" dstnodeid="16" dstpinname="Texture In">
    </LINK>
@@ -168,6 +174,18 @@
    </NODE>
    <LINK srcnodeid="17" srcpinname="Time" dstnodeid="18" dstpinname="Y Input Value">
    </LINK>
-   <LINK srcnodeid="10" srcpinname="PositionXY" dstnodeid="15" dstpinname="Go To Position">
+   <NODE systemname="Multiply (Value)" nodename="Multiply (Value)" componentmode="Hidden" id="19">
+   <BOUNDS type="Node" left="4905" top="975" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input 1" visible="1">
+   </PIN>
+   <PIN pinname="Input 2" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="10" srcpinname="PositionXY" dstnodeid="19" dstpinname="Input 1">
+   </LINK>
+   <LINK srcnodeid="19" srcpinname="Output" dstnodeid="15" dstpinname="Go To Position">
    </LINK>
    </PATCH>

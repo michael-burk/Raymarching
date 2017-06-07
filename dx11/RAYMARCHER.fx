@@ -88,6 +88,41 @@ float sceneSDF (float3 p)
 	return smin(sphere(p+mouse),sphere(p1),.2);
 }
 
+float hash1( float n )
+{
+    return frac(sin(n)*43758.5453123);
+}
+
+float hash1( in float2 f ) 
+{ 
+    return frac(sin(f.x+131.1*f.y)*43758.5453123); 
+}
+
+static const float PI = 3.1415926535897932384626433832795;
+static const float PHI = 1.6180339887498948482045868343656;
+
+float3 forwardSF( float i, float n) 
+{
+    float phi = 2.0*PI*frac(i/PHI);
+    float zi = 1.0 - (2.0*i+1.0)/n;
+    float sinTheta = sqrt( 1.0 - zi*zi);
+    return float3( cos(phi)*sinTheta, sin(phi)*sinTheta, zi);
+}
+
+float calcAO( in float3 pos, in float3 nor)
+{
+	float ao = 0.0;
+    for( int i=0; i<64; i++ )
+    {
+        float3 ap = forwardSF( float(i), 64.0 );
+		ap *= sign( dot(ap,nor) ) * hash1(float(i));
+//        ao += clamp( sceneSDF( pos + nor*.3 + ap*.5 )*16.0, 0.0, 1.0 );
+		  ao += clamp( sceneSDF( pos + nor*0.3 + ap*1.0 )*32.0, 0.0, 1.0 );
+    }
+	ao /= 64.0;
+	
+    return clamp( ao*ao, 0.0, 1.0 );
+}
 float3 calcNormal( in float3 pos )
 {
 	float3 eps = float3( 0.0001, 0.0, 0.0 );
@@ -132,17 +167,16 @@ float4 PS(VS_OUT input): SV_Target
 	// Ray Direction
 	float3 dir = UVtoEYE(input.uv.xy);
 	
-//	float dist = shortestDistanceToSurface(eye, dir, MIN_DIST, MAX_DIST);
+
 	float dist = raymarch(eye,dir);
 	float3 p = eye + dist * dir;
-//	float3 normal = 1;
+
  	float3 normal = calcNormal(p);
 	
 	
 	float fog = 1 - 1/(1+dist*.25);
-//	col = float4(length(p)*fog + (1 - fog)*p,1); 
-//	float4 col = float4(p*fog + (1 - fog),1); 
-
+	
+	float occ = calcAO( p, normal); occ = occ*occ;
 
 //	float not_grid = box(p);
 //	if(not_grid > .01)
@@ -157,15 +191,15 @@ float4 PS(VS_OUT input): SV_Target
 	
 	// FRESNEL CALCS 
 	float KrMin = 0;
-	float Kr =1;
-	float FresExp = 3;
+	float Kr =1.1;
+	float FresExp = 1;
 	float3 reflVect = reflect(dir,normal);
 	float vdn = -saturate(dot(reflVect,normal));
 	float fresRefl = KrMin + (Kr-KrMin) * pow(1-abs(vdn),FresExp);	
 	
 	
 //	col = lerp(float4(.5,.5,.5,0)+float4(min(normal,0),1)+fresRefl*float4(1,0,0,0),float4(.5,0,1,0),fog);
-	col = lerp(float4(.9,.9,.9,0)+fresRefl*float4(1,1,1,0),float4(.5,0,1,0),fog);
+	col = lerp(float4(.8,.8,.8,0)*occ+fresRefl*float4(1,1,1,0),float4(.3,0,1,0),fog);
 
 //	col = fog;
 	
