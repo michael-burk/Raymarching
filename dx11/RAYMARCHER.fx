@@ -45,10 +45,10 @@ float smin( float a, float b, float k )
     return lerp( b, a, h ) - k*h*(1.0-h);
 }
 
-float box (float3 p){
+float box (float3 p, float3 size){
 //	p = 1 - frac(p)*2;
 //	p = abs(p) - float3(.05,.5,.05)+  (sin(10*p.x)*sin(10*p.y)*sin(10*p.z))*.03;
-	p = abs(p) - float3(.25,.25,.25);
+	p = abs(p) - size;
 	return max(p.x,max(p.y,p.z));
 }
 
@@ -66,8 +66,10 @@ float sphere (float3 p){
 //	return (length(p+mouse) - .5 ) +  (sin(10*p.x)*sin(10*p.y)*sin(10*p.z))*.1;
 
 	// Simple Sphere
-	return (length(p) - 1.5 )*.2;
+	return (length(p) - 1.5 )*.1;
 }
+
+float time;
 
 // Distance field function
 float sceneSDF (float3 p)
@@ -80,12 +82,33 @@ float sceneSDF (float3 p)
 //	return max(box(p),sphere(p));
 
 	//Domain Distortion
-	p1.xyz += 1.000*sin(  2.0*p1.yzx )*.9;
-    p1.xyz += 0.500*sin(  4.0*p1.yzx )*.9;
-    p1.xyz += 0.250*sin(  8.0*p1.yzx )*.9;
-    p1.xyz += 0.050*sin( 16.0*p1.yzx )*.9;
+	p1.xyz += 1.000*sin(  2.0*p1.yzx +time)*.9;
+    p1.xyz += 0.500*sin(  4.0*p1.yzx -time*15.1)*.9;
+    p1.xyz += 0.250*sin(  8.0*p1.yzx +time*10.2)*.9;
+    p1.xyz += 0.050*sin( 16.0*p1.yzx -time*14.3)*.9;
 //	return sphere(p);
-	return smin(sphere(p+mouse),sphere(p1),.2);
+
+	// Intersect Chamfer
+//	float a = sphere(p+mouse);
+//	float b = sphere(p1);
+//	float r = .1;
+//
+//	return max(max(a, b), (a + r + b)*sqrt(0.5));
+	
+	// Difference Chamfer
+	float a = sphere(p+mouse);
+	float b = sphere(p1);
+	float r = .1;
+	return max(max(a, -b), (a + r - b)*sqrt(0.5));
+	
+	// Combine
+//	return smin(sphere(p+mouse),sphere(p1),.2);
+
+	//Pipe
+//	float a = box(p,float3(1.0,1.2,1.0));
+//	float b = box(p,float3(1,1,1));
+//	float r = .1;
+//	return length(float2(a, b)) - r;
 }
 
 float hash1( float n )
@@ -117,15 +140,16 @@ float calcAO( in float3 pos, in float3 nor)
         float3 ap = forwardSF( float(i), 64.0 );
 		ap *= sign( dot(ap,nor) ) * hash1(float(i));
 //        ao += clamp( sceneSDF( pos + nor*.3 + ap*.5 )*16.0, 0.0, 1.0 );
-		  ao += clamp( sceneSDF( pos + nor*0.3 + ap*1.0 )*32.0, 0.0, 1.0 );
+		  ao += clamp( sceneSDF( pos + nor*.1 + ap*.3 )*64.0, 0.0, 1.0 );
     }
 	ao /= 64.0;
 	
     return clamp( ao*ao, 0.0, 1.0 );
+//	return 1;
 }
 float3 calcNormal( in float3 pos )
 {
-	float3 eps = float3( 0.0001, 0.0, 0.0 );
+	float3 eps = float3( 0.001, 0.0, 0.0 );
 	float3 nor = float3(
 	sceneSDF(pos+eps.xyy) - sceneSDF(pos-eps.xyy),
 	sceneSDF(pos+eps.yxy) - sceneSDF(pos-eps.yxy),
@@ -133,27 +157,29 @@ float3 calcNormal( in float3 pos )
 	return normalize(nor);
 }
 
-static const float MAX_DIST = 15.0;
+static const float MAX_DIST = 10.0;
 static const float EPSILON = .001;
+
 
 float raymarch (in float3 eye, in float3 dir)
 {
-	float t = 1.0;
-	float dist = 1.0;
-	for (uint i = 0 ; i < 512 ; i++)
-	{
-//		p = ro + rd*t;
-
-
+	float t = 0.0;
+	float dist = .1;
+	for (uint i = 0 ; i < 1024 ; i++)
+	{	
+		
 		if(dist < EPSILON || dist > MAX_DIST) break;
 		
 		dist = sceneSDF (eye + dir*t);
 		t += dist * 0.5;
 	}
+	
+
 //	if( t>MAX_DIST ) t=-1.0;
 	return t;
 
 }
+
 
 float4 PS(VS_OUT input): SV_Target
 {	
@@ -167,16 +193,18 @@ float4 PS(VS_OUT input): SV_Target
 	// Ray Direction
 	float3 dir = UVtoEYE(input.uv.xy);
 	
-
+	float edge = 0;
+//	float dist = raymarchEdge(eye,dir,edge);
 	float dist = raymarch(eye,dir);
 	float3 p = eye + dist * dir;
 
  	float3 normal = calcNormal(p);
 	
 	
-	float fog = 1 - 1/(1+dist*.25);
-	
-	float occ = calcAO( p, normal); occ = occ*occ;
+	float fog = max(1 - 1/(1+dist*dist*.15),.0);
+	float occ = 1;
+	occ = calcAO( p, normal);
+//	occ = occ*occ;
 
 //	float not_grid = box(p);
 //	if(not_grid > .01)
@@ -191,20 +219,21 @@ float4 PS(VS_OUT input): SV_Target
 	
 	// FRESNEL CALCS 
 	float KrMin = 0;
-	float Kr =1.1;
-	float FresExp = 1;
+	float Kr =1;
+	float FresExp = 2;
 	float3 reflVect = reflect(dir,normal);
 	float vdn = -saturate(dot(reflVect,normal));
 	float fresRefl = KrMin + (Kr-KrMin) * pow(1-abs(vdn),FresExp);	
 	
 	
 //	col = lerp(float4(.5,.5,.5,0)+float4(min(normal,0),1)+fresRefl*float4(1,0,0,0),float4(.5,0,1,0),fog);
-	col = lerp(float4(.8,.8,.8,0)*occ+fresRefl*float4(1,1,1,0),float4(.3,0,1,0),fog);
+	col = lerp((float4(.5,.5,.5,0)+fresRefl*float4(.5,.5,1,0))*occ,float4(.8,.8,1,0),fog);
 
 //	col = fog;
 	
-//	return float4(p,1);
-    return col;
+//	return  lerp(float4(1,1,1,1),float4(0,0,0,1),edge);
+
+    return saturate(col);
 }
 
 
