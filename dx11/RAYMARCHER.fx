@@ -3,13 +3,19 @@
 //@tags: template
 //@credits: 
 
-
+SamplerState linearSampler <string uiname="Sampler State";>
+{
+    Filter = MIN_MAG_MIP_LINEAR;
+    AddressU = CLAMP;
+    AddressV = CLAMP;
+};
 	float4x4 tVP : LAYERVIEWPROJECTION;	
 	float4x4 tVI: VIEWINVERSE;
 	float4x4 tW : WORLD;
 	float4x4 tPI : PROJECTIONINVERSE;
 
 StructuredBuffer <float3> particles;
+Texture2D depth;
 
 struct VS_IN
 {
@@ -71,8 +77,6 @@ float sphere (float3 p){
 	return (length(p) - 1.5 )*.1;
 }
 
-float time;
-
 float particleCloud(float3 p){
 	
 	uint x,m;
@@ -84,6 +88,11 @@ float particleCloud(float3 p){
 	return cloud;
 }
 
+float depthTex(float3 p){
+	return -p.z  + (depth.SampleLevel(linearSampler,p.xy*float2(1,-1)*.25+.5,0).r);
+}
+
+float time;
 // Distance field function
 float sceneSDF (float3 p)
 {
@@ -115,7 +124,7 @@ float sceneSDF (float3 p)
 //	return max(max(a, -b), (a + r - b)*sqrt(0.5));
 	
 	// Combine
-//	return smin(sphere(p+mouse),sphere(p1),.2);
+	return smin(sphere(p+mouse),sphere(p1),.2);
 
 	//Pipe
 //	float a = box(p,float3(1.0,1.2,1.0));
@@ -123,8 +132,9 @@ float sceneSDF (float3 p)
 //	float r = .1;
 //	return length(float2(a, b)) - r;
 
-//	return min(min(min(sphere(p+mouse), sphere(p)), sphere(p+float3(.1,1,1))),sphere(p+float3(.1,3,1)));
-	return particleCloud(p);
+	//Depth Tex
+//	return smin(sphere(p1+mouse),depthTex(p),.2);
+//	return depthTex(p);
 }
 
 float hash1( float n )
@@ -160,7 +170,6 @@ float calcAO( in float3 pos, in float3 nor)
 	ao /= 64.0;
 	
     return clamp( ao*ao, 0.0, 1.0 );
-//	return 1;
 }
 float3 calcNormal( in float3 pos )
 {
@@ -217,8 +226,8 @@ float4 PS(VS_OUT input): SV_Target
 	
 	float fog = max(1 - 1/(1+dist*dist*.15),.0);
 	float occ = 1;
-	occ = calcAO( p, normal);
-//	occ = occ*occ;
+//	occ = calcAO( p, normal);
+	occ = occ*occ;
 
 //	float not_grid = box(p);
 //	if(not_grid > .01)
@@ -239,13 +248,8 @@ float4 PS(VS_OUT input): SV_Target
 	float vdn = -saturate(dot(reflVect,normal));
 	float fresRefl = KrMin + (Kr-KrMin) * pow(1-abs(vdn),FresExp);	
 	
-	
-//	col = lerp(float4(.5,.5,.5,0)+float4(min(normal,0),1)+fresRefl*float4(1,0,0,0),float4(.5,0,1,0),fog);
 	col = lerp((float4(.5,.5,.5,0)+fresRefl*float4(.5,.5,1,0))*occ,float4(.8,.8,1,0),fog);
 
-//	col = fog;
-	
-//	return  lerp(float4(1,1,1,1),float4(0,0,0,1),edge);
 
     return saturate(col);
 }
