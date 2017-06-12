@@ -9,6 +9,8 @@
 	float4x4 tW : WORLD;
 	float4x4 tPI : PROJECTIONINVERSE;
 
+StructuredBuffer <float3> particles;
+
 struct VS_IN
 {
 	float4 pos : POSITION;
@@ -71,6 +73,17 @@ float sphere (float3 p){
 
 float time;
 
+float particleCloud(float3 p){
+	
+	uint x,m;
+	particles.GetDimensions(x,m);
+	float cloud = sphere(particles[0]+p);
+	for(uint i=1; i < x; i++){
+		cloud = min( (sphere(particles[i]+p)), cloud) ;
+	}
+	return cloud;
+}
+
 // Distance field function
 float sceneSDF (float3 p)
 {
@@ -82,11 +95,11 @@ float sceneSDF (float3 p)
 //	return max(box(p),sphere(p));
 
 	//Domain Distortion
-	p1.xyz += 1.000*sin(  2.0*p1.yzx +time)*.9;
-    p1.xyz += 0.500*sin(  4.0*p1.yzx -time*15.1)*.9;
-    p1.xyz += 0.250*sin(  8.0*p1.yzx +time*10.2)*.9;
-    p1.xyz += 0.050*sin( 16.0*p1.yzx -time*14.3)*.9;
-//	return sphere(p);
+//	p1.xyz += 1.000*sin(  2.0*p1.yzx +time)*.9;
+// 	p1.xyz += 0.500*sin(  4.0*p1.yzx -time*15.1)*.9;
+// 	p1.xyz += 0.250*sin(  8.0*p1.yzx +time*10.2)*.9;
+// 	p1.xyz += 0.050*sin( 16.0*p1.yzx -time*14.3)*.9;
+
 
 	// Intersect Chamfer
 //	float a = sphere(p+mouse);
@@ -96,10 +109,10 @@ float sceneSDF (float3 p)
 //	return max(max(a, b), (a + r + b)*sqrt(0.5));
 	
 	// Difference Chamfer
-	float a = sphere(p+mouse);
-	float b = sphere(p1);
-	float r = .1;
-	return max(max(a, -b), (a + r - b)*sqrt(0.5));
+//	float a = sphere(p+mouse);
+//	float b = sphere(p1);
+//	float r = .1;
+//	return max(max(a, -b), (a + r - b)*sqrt(0.5));
 	
 	// Combine
 //	return smin(sphere(p+mouse),sphere(p1),.2);
@@ -109,6 +122,9 @@ float sceneSDF (float3 p)
 //	float b = box(p,float3(1,1,1));
 //	float r = .1;
 //	return length(float2(a, b)) - r;
+
+//	return min(min(min(sphere(p+mouse), sphere(p)), sphere(p+float3(.1,1,1))),sphere(p+float3(.1,3,1)));
+	return particleCloud(p);
 }
 
 float hash1( float n )
@@ -139,8 +155,7 @@ float calcAO( in float3 pos, in float3 nor)
     {
         float3 ap = forwardSF( float(i), 64.0 );
 		ap *= sign( dot(ap,nor) ) * hash1(float(i));
-//        ao += clamp( sceneSDF( pos + nor*.3 + ap*.5 )*16.0, 0.0, 1.0 );
-		  ao += clamp( sceneSDF( pos + nor*.1 + ap*.3 )*64.0, 0.0, 1.0 );
+		ao += clamp( sceneSDF( pos + nor*.1 + ap*.3 )*64.0, 0.0, 1.0 );
     }
 	ao /= 64.0;
 	
@@ -179,7 +194,6 @@ float raymarch (in float3 eye, in float3 dir)
 	return t;
 
 }
-
 
 float4 PS(VS_OUT input): SV_Target
 {	
