@@ -40,7 +40,14 @@ VS_OUT VS(VS_IN input)
 
 float3 mouse;
 
+float mod(float x, float y)
+{
+  return x - y * floor(x/y);
+}
 
+float pMod1(float3 p, float x){
+	return mod(p.x+x/2,x) - x/2;
+}
 
 float3 UVtoEYE(float2 UV){
 	return normalize( mul(float4(mul(float4((UV.xy*2-1)*float2(1,-1),0,1),tPI).xy,1,0),tVI).xyz);
@@ -75,6 +82,12 @@ float sphere (float3 p){
 
 	// Simple Sphere
 	return (length(p) - 1.5 )*.1;
+}
+
+float model(float3 p){
+//	p = 1 - frac(p)*2;
+	p.x = pMod1(p,3).x;
+	return (length(p) - 1 )*.1;
 }
 
 float particleCloud(float3 p){
@@ -124,7 +137,7 @@ float sceneSDF (float3 p)
 //	return max(max(a, -b), (a + r - b)*sqrt(0.5));
 	
 	// Combine
-	return smin(sphere(p+mouse),sphere(p1),.2);
+//	return smin(sphere(p+mouse),sphere(p1),.2);
 
 	//Pipe
 //	float a = box(p,float3(1.0,1.2,1.0));
@@ -135,6 +148,7 @@ float sceneSDF (float3 p)
 	//Depth Tex
 //	return smin(sphere(p1+mouse),depthTex(p),.2);
 //	return depthTex(p);
+	return model(p);
 }
 
 float hash1( float n )

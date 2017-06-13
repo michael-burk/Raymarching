@@ -586,8 +586,6 @@
    </NODE>
    <LINK srcnodeid="67" srcpinname="Transform Out" dstnodeid="49" dstpinname="Transform In">
    </LINK>
-   <LINK srcnodeid="30" srcpinname="Y Output Value" dstnodeid="19" dstpinname="Input 1">
-   </LINK>
    <LINK srcnodeid="14" srcpinname="Y Output Value" dstnodeid="51" dstpinname="Texture SizeXY">
    </LINK>
    <LINK srcnodeid="49" srcpinname="Layer" dstnodeid="51" dstpinname="Layer">
@@ -665,5 +663,7 @@
    </PIN>
    </NODE>
    <LINK srcnodeid="110" srcpinname="Geometry Out" dstnodeid="49" dstpinname="Geometry">
+   </LINK>
+   <LINK srcnodeid="29" srcpinname="Output" dstnodeid="19" dstpinname="Input 1">
    </LINK>
    </PATCH>
