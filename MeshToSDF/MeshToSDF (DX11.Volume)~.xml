@@ -1,5 +1,5 @@
-<!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv50beta35.dtd" >
-   <PATCH nodename="C:\Users\Kyle\Desktop\Dropbox\VVVV Files\vvvv_50beta35_x64\packs\InstanceNoodlesWiP\nodes\modules\DX11.Volume\MeshToSDF (DX11.Volume)\MeshToSDF (DX11.Volume).v4p" systemname="MeshToSDF (DX11.Volume)" filename="C:\Users\Kyle\Desktop\Dropbox\VVVV Files\vvvv_45beta34.2_x64\packs\MarchingBand\nodes\modules\VolumeStuff\FakeDF\MeshToSDF (DX11.Volume).v4p" scrollx="0" scrolly="0">
+<!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv50beta35.5.dtd" >
+   <PATCH nodename="C:\Projects\Raymarching\MeshToSDF\MeshToSDF (DX11.Volume).v4p" systemname="MeshToSDF (DX11.Volume)" filename="C:\Users\Kyle\Desktop\Dropbox\VVVV Files\vvvv_45beta34.2_x64\packs\MarchingBand\nodes\modules\VolumeStuff\FakeDF\MeshToSDF (DX11.Volume).v4p" scrollx="0" scrolly="1620">
    <BOUNDS type="Window" left="8385" top="540" width="14805" height="13710">
    </BOUNDS>
    <PACK Name="addonpack" Version="35.0.0">
@@ -865,7 +865,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="450" top="360" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Input String" slicecount="1" visible="1" values="|..\..\..\..\..\..\..\..\Projects\! Refik Anadol Studio\WDCH\WDCH.obj|">
+   <PIN pinname="Input String" slicecount="1" visible="1" values="||">
    </PIN>
    <PIN pinname="Default" slicecount="1" values="||">
    </PIN>

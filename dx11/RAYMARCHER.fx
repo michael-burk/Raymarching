@@ -1,8 +1,11 @@
 //@author: vux
 //@help: template for standard shaders
 //@tags: template
-//@credits: 
+//@credits:
 
+Texture3D texVOL <string uiname="Volume";>;
+
+float4 control;
 SamplerState linearSampler <string uiname="Sampler State";>
 {
     Filter = MIN_MAG_MIP_LINEAR;
@@ -40,13 +43,31 @@ VS_OUT VS(VS_IN input)
 
 float3 mouse;
 
+
+
 float mod(float x, float y)
 {
   return x - y * floor(x/y);
 }
+float3 mod3(float3 x, float3 y)
+{
+  return x - y * floor(x/y);
+}
+float3 mirror(float3 p, float v) {
+  float hv = v * 0.5;
+  float3  fl = mod3(floor(p / v + 0.5), 2.0) * 2.0 - 1.0;
+  float3  mp = mod3(p + hv, v) - hv;
+    
+  return fl * mp;
+}
 
-float pMod1(float3 p, float x){
-	return mod(p.x+x/2,x) - x/2;
+float pMod1(inout float p, float size){
+	
+	float halfsize = size*.5;
+	float c = floor((p+halfsize)/size);
+	
+	p = mod(p.x+halfsize,size) - halfsize;
+	return c;
 }
 
 float3 UVtoEYE(float2 UV){
@@ -71,7 +92,7 @@ float plane (float3 p){
 	return (p.y);
 }
 
-float sphere (float3 p){
+float sphere (float3 p, float radius){
 
 	//Repeat
 //	p = 1 - frac(p)*2;
@@ -81,22 +102,29 @@ float sphere (float3 p){
 //	return (length(p+mouse) - .5 ) +  (sin(10*p.x)*sin(10*p.y)*sin(10*p.z))*.1;
 
 	// Simple Sphere
-	return (length(p) - 1.5 )*.1;
+	return (length(p) - radius )*.1;
 }
 
 float model(float3 p){
-//	p = 1 - frac(p)*2;
-	p.x = pMod1(p,3).x;
-	return (length(p) - 1 )*.1;
+//	p.xz = 1 - frac(p.xz)*2;
+
+
+	float c = pMod1(p.x,2);
+	p.y +=sin(c/2)*2;
+	
+//		p.y -= sin(c/2)*2;
+	
+
+	return (length(p) - 1.0 + abs(c)*.1)*.1;
 }
 
 float particleCloud(float3 p){
 	
 	uint x,m;
 	particles.GetDimensions(x,m);
-	float cloud = sphere(particles[0]+p);
+	float cloud = sphere(particles[0]+p,1.5);
 	for(uint i=1; i < x; i++){
-		cloud = min( (sphere(particles[i]+p)), cloud) ;
+		cloud = min( (sphere(particles[i]+p,1.5)), cloud) ;
 	}
 	return cloud;
 }
@@ -105,6 +133,10 @@ float depthTex(float3 p){
 	return -p.z  + (depth.SampleLevel(linearSampler,p.xy*float2(1,-1)*.25+.5,0).r);
 }
 
+float volume(float3 p){
+//		p.xyz = p.xyz ;
+		return texVOL.SampleLevel(linearSampler,float3(p.xyz*.5+.5),0).x;
+}
 float time;
 // Distance field function
 float sceneSDF (float3 p)
@@ -131,8 +163,8 @@ float sceneSDF (float3 p)
 //	return max(max(a, b), (a + r + b)*sqrt(0.5));
 	
 	// Difference Chamfer
-//	float a = sphere(p+mouse);
-//	float b = sphere(p1);
+//	float a = sphere(p+mouse,2);
+//	float b = sphere(p1,2);
 //	float r = .1;
 //	return max(max(a, -b), (a + r - b)*sqrt(0.5));
 	
@@ -148,7 +180,18 @@ float sceneSDF (float3 p)
 	//Depth Tex
 //	return smin(sphere(p1+mouse),depthTex(p),.2);
 //	return depthTex(p);
-	return model(p);
+
+	//Modeling with distance functions
+//	return model(p);
+
+	//Volume Marching
+float a = box(p+mouse,.5);
+float b = volume(p);
+float r = .02;
+return max(max(a, -b), (a + r - b)*sqrt(0.5));
+//	return max(sphere(p1+mouse,.5),volume(p));
+//	return max(box(p+mouse,.5),volume(p));
+//	return volume(p);
 }
 
 float hash1( float n )
@@ -195,6 +238,8 @@ float3 calcNormal( in float3 pos )
 	return normalize(nor);
 }
 
+
+
 static const float MAX_DIST = 10.0;
 static const float EPSILON = .001;
 
@@ -238,7 +283,7 @@ float4 PS(VS_OUT input): SV_Target
  	float3 normal = calcNormal(p);
 	
 	
-	float fog = max(1 - 1/(1+dist*dist*.15),.0);
+	float fog = max(1 - 1000/(dist*dist*1),.0);
 	float occ = 1;
 //	occ = calcAO( p, normal);
 	occ = occ*occ;
@@ -249,9 +294,6 @@ float4 PS(VS_OUT input): SV_Target
 //		col.rgb *= saturate(abs(frac(not_grid*10)*2-1)*10);
 //	}
 	
-	// Avoid artifacts for infinite distances
-//	if(abs(map(p)) > .1) discard;
-//	if(abs(map(p)) > .1) col.xyz = (1 - fog)*p;
 
 	
 	// FRESNEL CALCS 
@@ -262,8 +304,16 @@ float4 PS(VS_OUT input): SV_Target
 	float vdn = -saturate(dot(reflVect,normal));
 	float fresRefl = KrMin + (Kr-KrMin) * pow(1-abs(vdn),FresExp);	
 	
-	col = lerp((float4(.5,.5,.5,0)+fresRefl*float4(.5,.5,1,0))*occ,float4(.8,.8,1,0),fog);
+	//	 Avoid artifacts for infinite distances
+	if(abs(sceneSDF(p)) > .01){
+		col = float4(.8,.8,1,0);
+	}else{
+		col = lerp((float4(.5,.5,.5,0)+fresRefl*float4(.5,.5,1,0))*occ,float4(.8,.8,1,0),fog);
 
+	} 
+//	if(abs(sceneSDF(p)) > .1) col.xyz = (1 - fog)*p;
+
+	
 
     return saturate(col);
 }
