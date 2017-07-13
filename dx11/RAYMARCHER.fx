@@ -4,13 +4,20 @@
 //@credits:
 
 Texture3D texVOL <string uiname="Volume";>;
+#include <packs\InstanceNoodles\nodes\modules\Common\NoodleNoise.fxh>
+iFractalNoise fractalType <string linkclass="Noise,FBM,Turbulence,Ridge";>;
+iCellDist cellDistance <string linkclass="EuclideanSquared,Euclidean,Chebyshev,Manhattan,Minkowski";>;
+iCellFunc cellFunction <string linkclass="F1,F2,F2MinusF1,Average,Crackle";>;
+float freq, pers, lacun;
+int oct;
+
 
 float4 control;
 SamplerState linearSampler <string uiname="Sampler State";>
 {
     Filter = MIN_MAG_MIP_LINEAR;
-    AddressU = CLAMP;
-    AddressV = CLAMP;
+    AddressU = WRAP;
+    AddressV = WRAP;
 };
 	float4x4 tVP : LAYERVIEWPROJECTION;	
 	float4x4 tVI: VIEWINVERSE;
@@ -102,7 +109,7 @@ float sphere (float3 p, float radius){
 //	return (length(p+mouse) - .5 ) +  (sin(10*p.x)*sin(10*p.y)*sin(10*p.z))*.1;
 
 	// Simple Sphere
-	return (length(p) - radius )*.1;
+	return (length(p) - radius );
 }
 
 float model(float3 p){
@@ -135,7 +142,7 @@ float depthTex(float3 p){
 
 float volume(float3 p){
 //		p.xyz = p.xyz ;
-		return texVOL.SampleLevel(linearSampler,float3(p.xyz*.5+.5),0).x;
+		return texVOL.SampleLevel(linearSampler,float3((p.xyz+.5)*1),0).x;
 }
 float time;
 // Distance field function
@@ -185,13 +192,27 @@ float sceneSDF (float3 p)
 //	return model(p);
 
 	//Volume Marching
-float a = box(p+mouse,.5);
-float b = volume(p);
-float r = .02;
-return max(max(a, -b), (a + r - b)*sqrt(0.5));
+//float a = box(p+mouse,.5);
+//float b = volume(p);
+//float r = .02;
+//return max(max(a, -b), (a + r - b)*sqrt(0.5));
 //	return max(sphere(p1+mouse,.5),volume(p));
 //	return max(box(p+mouse,.5),volume(p));
 //	return volume(p);
+
+//	p += fractalType.Worley(Euclidean, F1, p, freq, pers, lacun, 1);
+//	p += volume(p*.5)*.1;
+	// Molecuar
+	//Difference
+	float a = sphere(p,2.05);
+	float b = sphere(p,2);
+	float r = .001;
+	float result = max(max(a, -b), (a + r - b)*sqrt(0.5));
+
+//	result = max(-box(p+mouse,float3(5,1,1)), result);
+	result = max( -volume(p)*.1, result);
+	//return result * saturate(fractalType.Worley(cellDistance, cellFunction, p, freq, pers, lacun, oct));
+	return result;
 }
 
 float hash1( float n )
@@ -222,7 +243,7 @@ float calcAO( in float3 pos, in float3 nor)
     {
         float3 ap = forwardSF( float(i), 64.0 );
 		ap *= sign( dot(ap,nor) ) * hash1(float(i));
-		ao += clamp( sceneSDF( pos + nor*.1 + ap*.3 )*64.0, 0.0, 1.0 );
+		ao += clamp( sceneSDF( pos + nor*.1 + ap*.2 )*64.0, 0.0, 1.0 );
     }
 	ao /= 64.0;
 	
@@ -285,7 +306,7 @@ float4 PS(VS_OUT input): SV_Target
 	
 	float fog = max(1 - 1000/(dist*dist*1),.0);
 	float occ = 1;
-//	occ = calcAO( p, normal);
+	occ = calcAO( p, normal);
 	occ = occ*occ;
 
 //	float not_grid = box(p);
@@ -294,7 +315,7 @@ float4 PS(VS_OUT input): SV_Target
 //		col.rgb *= saturate(abs(frac(not_grid*10)*2-1)*10);
 //	}
 	
-
+	
 	
 	// FRESNEL CALCS 
 	float KrMin = 0;
@@ -313,7 +334,7 @@ float4 PS(VS_OUT input): SV_Target
 	} 
 //	if(abs(sceneSDF(p)) > .1) col.xyz = (1 - fog)*p;
 
-	
+//	col += fractalType.Worley(cellDistance, cellFunction, p, freq, pers, lacun, oct);
 
     return saturate(col);
 }
