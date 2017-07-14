@@ -142,7 +142,7 @@ float depthTex(float3 p){
 
 float volume(float3 p){
 //		p.xyz = p.xyz ;
-		return texVOL.SampleLevel(linearSampler,float3((p.xyz+.5)*1),0).x;
+		return texVOL.SampleLevel(linearSampler,float3((p.xyz*.1+.1)),0).x;
 }
 float time;
 // Distance field function
@@ -202,8 +202,9 @@ float sceneSDF (float3 p)
 
 //	p += fractalType.Worley(Euclidean, F1, p, freq, pers, lacun, 1);
 //	p += volume(p*.5)*.1;
+
 	// Molecuar
-	//Difference
+	// Difference
 	float a = sphere(p,2.05);
 	float b = sphere(p,2);
 	float r = .001;
@@ -211,7 +212,7 @@ float sceneSDF (float3 p)
 
 //	result = max(-box(p+mouse,float3(5,1,1)), result);
 	result = max( -volume(p)*.1, result);
-	//return result * saturate(fractalType.Worley(cellDistance, cellFunction, p, freq, pers, lacun, oct));
+//	return result * saturate(fractalType.Worley(Euclidean, F1, p, freq, pers, lacun, 1));
 	return result;
 }
 
@@ -306,7 +307,7 @@ float4 PS(VS_OUT input): SV_Target
 	
 	float fog = max(1 - 1000/(dist*dist*1),.0);
 	float occ = 1;
-	occ = calcAO( p, normal);
+//	occ = calcAO( p, normal);
 	occ = occ*occ;
 
 //	float not_grid = box(p);
@@ -351,7 +352,3 @@ technique10 Constant
 		SetPixelShader( CompileShader( ps_5_0, PS() ) );
 	}
 }
-
-
-
-
