@@ -24,9 +24,8 @@ SamplerState linearSampler <string uiname="Sampler State";>
 	float4x4 tW : WORLD;
 	float4x4 tPI : PROJECTIONINVERSE;
 
-StructuredBuffer <float3> particles;
 Texture2D depth;
-
+float2 ctrl;
 struct VS_IN
 {
 	float4 pos : POSITION;
@@ -102,7 +101,7 @@ float plane (float3 p){
 float sphere (float3 p, float radius){
 
 	//Repeat
-//	p = 1 - frac(p)*2;
+	//p = 1 - frac(p)*2;
 
 	// Displaced Sphere + Mouse
 //	p+=mouse;
@@ -125,25 +124,38 @@ float model(float3 p){
 	return (length(p) - 1.0 + abs(c)*.1)*.1;
 }
 
-float particleCloud(float3 p){
-	
-	uint x,m;
-	particles.GetDimensions(x,m);
-	float cloud = sphere(particles[0]+p,1.5);
-	for(uint i=1; i < x; i++){
-		cloud = min( (sphere(particles[i]+p,1.5)), cloud) ;
-	}
-	return cloud;
-}
 
 float depthTex(float3 p){
 	return -p.z  + (depth.SampleLevel(linearSampler,p.xy*float2(1,-1)*.25+.5,0).r);
 }
 
+
 float volume(float3 p){
 //		p.xyz = p.xyz ;
-		return texVOL.SampleLevel(linearSampler,float3((p.xyz*.1+.1)),0).x;
+//	    p = p*2048 + 0.5;
+//	
+//	    float3 i = floor(p);
+//	    float3 f = p - i;
+//	    f = f*f*f*(f*(f*6.0-15.0)+10.0);
+//	    p = i + f;
+//	
+//	    p = (p - 0.5)/2048;
+//	    return texture2D( myTex, p );
+	
+		return texVOL.SampleLevel(linearSampler,float3((p.xyz*ctrl.x+ctrl.y)),0).x;
 }
+
+float hash1( float n )
+{
+    return frac(sin(n)*43758.5453123);
+}
+
+float hash1( in float2 f ) 
+{ 
+    return frac(sin(f.x+131.1*f.y)*43758.5453123); 
+}
+
+
 float time;
 // Distance field function
 float sceneSDF (float3 p)
@@ -156,10 +168,10 @@ float sceneSDF (float3 p)
 //	return max(box(p),sphere(p));
 
 	//Domain Distortion
-//	p1.xyz += 1.000*sin(  2.0*p1.yzx +time)*.9;
-// 	p1.xyz += 0.500*sin(  4.0*p1.yzx -time*15.1)*.9;
-// 	p1.xyz += 0.250*sin(  8.0*p1.yzx +time*10.2)*.9;
-// 	p1.xyz += 0.050*sin( 16.0*p1.yzx -time*14.3)*.9;
+	p1.xyz += 1.000*sin(  2.0*p1.yzx +time)*.9;
+ 	p1.xyz += 0.500*sin(  4.0*p1.yzx -time*15.1)*.9;
+ 	p1.xyz += 0.250*sin(  8.0*p1.yzx +time*10.2)*.9;
+ 	p1.xyz += 0.050*sin( 16.0*p1.yzx -time*14.3)*.9;
 
 
 	// Intersect Chamfer
@@ -202,7 +214,6 @@ float sceneSDF (float3 p)
 
 //	p += fractalType.Worley(Euclidean, F1, p, freq, pers, lacun, 1);
 //	p += volume(p*.5)*.1;
-
 	// Molecuar
 	// Difference
 	float a = sphere(p,2.05);
@@ -211,20 +222,26 @@ float sceneSDF (float3 p)
 	float result = max(max(a, -b), (a + r - b)*sqrt(0.5));
 
 //	result = max(-box(p+mouse,float3(5,1,1)), result);
-	result = max( -volume(p)*.1, result);
+
+//	if(result > sphere(p,2.2)) result = max( -fractalType.FastWorley(p+mouse, freq, pers, lacun, 1), result);
+
+	result = max( -fractalType.FastWorley(p+mouse, freq, pers, lacun, 1), result);
+	
+//	result = max( fractalType.Simplex(p+mouse, freq, pers, lacun, 1)*.1, result);
+
+//	result = max(sphere(p1,2)*.1,result);
+//	result = smin ( ( max( (volume(p)*1) ,result)), ( max( (volume(p)*0.1) ,result)) ,.1);
+//	result = smin ( ( max( (volume(p*.99)*.1) ,result)), ( max( (volume(p)*.1) ,result)) ,.1);
+//	result = max( (volume(p)*0.1) ,result);
+	
+//	result = smin( box(p+2,1), box(p,2), .2);
+//	result = box(p,2);
+	
+//	return result + saturate(fractalType.FastWorley(p, freq, pers, lacun, 1));
 //	return result * saturate(fractalType.Worley(Euclidean, F1, p, freq, pers, lacun, 1));
 	return result;
 }
 
-float hash1( float n )
-{
-    return frac(sin(n)*43758.5453123);
-}
-
-float hash1( in float2 f ) 
-{ 
-    return frac(sin(f.x+131.1*f.y)*43758.5453123); 
-}
 
 static const float PI = 3.1415926535897932384626433832795;
 static const float PHI = 1.6180339887498948482045868343656;
@@ -300,15 +317,15 @@ float4 PS(VS_OUT input): SV_Target
 	float edge = 0;
 //	float dist = raymarchEdge(eye,dir,edge);
 	float dist = raymarch(eye,dir);
+	
 	float3 p = eye + dist * dir;
-
  	float3 normal = calcNormal(p);
 	
 	
 	float fog = max(1 - 1000/(dist*dist*1),.0);
 	float occ = 1;
 //	occ = calcAO( p, normal);
-	occ = occ*occ;
+//	occ = occ*occ;
 
 //	float not_grid = box(p);
 //	if(not_grid > .01)
