@@ -26,6 +26,7 @@ SamplerState linearSampler <string uiname="Sampler State";>
 
 Texture2D depth;
 float2 ctrl;
+float3 ctrl2;
 struct VS_IN
 {
 	float4 pos : POSITION;
@@ -110,13 +111,20 @@ float sphere (float3 p, float radius){
 	// Simple Sphere
 	return (length(p) - radius );
 }
+float sphereRepeat (float3 p, float radius){
 
+	//Repeat
+	p = 1 - frac(p)*2;
+	
+	// Simple Sphere
+	return (length(p) - radius );
+}
 float model(float3 p){
 //	p.xz = 1 - frac(p.xz)*2;
 
 
 	float c = pMod1(p.x,2);
-	p.y +=sin(c/2)*2;
+	p.y +=sin(c);
 	
 //		p.y -= sin(c/2)*2;
 	
@@ -143,12 +151,13 @@ float volume(float3 p){
 //	    return texture2D( myTex, p );
 	
 		return texVOL.SampleLevel(linearSampler,float3((p.xyz*ctrl.x+ctrl.y)),0).x;
+//		return lerp(texVOL.SampleLevel(linearSampler,float3((p.xyz*ctrl.x+ctrl.y)),0).x, texVOL.SampleLevel(linearSampler,float3((p.xyz*ctrl.x+ctrl.y+float3(.01,.01,.01))),0).x,ctrl2.x);
 }
 
-float hash1( float n )
-{
-    return frac(sin(n)*43758.5453123);
-}
+//float hash1( float n )
+//{
+//    return frac(sin(n)*43758.5453123);
+//}
 
 float hash1( in float2 f ) 
 { 
@@ -160,7 +169,7 @@ float time;
 // Distance field function
 float sceneSDF (float3 p)
 {
-	float3 p1 = p;
+//	float3 p1 = p;
 //	return lerp(box(p),sphere(p),.5);
 
 //	return smin(box(p),sphere(p),.2);
@@ -168,10 +177,10 @@ float sceneSDF (float3 p)
 //	return max(box(p),sphere(p));
 
 	//Domain Distortion
-	p1.xyz += 1.000*sin(  2.0*p1.yzx +time)*.9;
- 	p1.xyz += 0.500*sin(  4.0*p1.yzx -time*15.1)*.9;
- 	p1.xyz += 0.250*sin(  8.0*p1.yzx +time*10.2)*.9;
- 	p1.xyz += 0.050*sin( 16.0*p1.yzx -time*14.3)*.9;
+//	p1.xyz += 1.000*sin(  2.0*p1.yzx +time)*.9;
+// 	p1.xyz += 0.500*sin(  4.0*p1.yzx -time*15.1)*.9;
+// 	p1.xyz += 0.250*sin(  8.0*p1.yzx +time*10.2)*.9;
+// 	p1.xyz += 0.050*sin( 16.0*p1.yzx -time*14.3)*.9;
 
 
 	// Intersect Chamfer
@@ -216,30 +225,40 @@ float sceneSDF (float3 p)
 //	p += volume(p*.5)*.1;
 	// Molecuar
 	// Difference
-	float a = sphere(p,2.05);
-	float b = sphere(p,2);
-	float r = .001;
-	float result = max(max(a, -b), (a + r - b)*sqrt(0.5));
+//	float a = sphere(p,1.01);
+//	float b = sphere(p,1);
+//	float r = .001;
+//	float result = max(max(a, -b), (a + r - b)*sqrt(0.5));
 
 //	result = max(-box(p+mouse,float3(5,1,1)), result);
 
 //	if(result > sphere(p,2.2)) result = max( -fractalType.FastWorley(p+mouse, freq, pers, lacun, 1), result);
 
-	result = max( -fractalType.FastWorley(p+mouse, freq, pers, lacun, 1), result);
+//	result = max( -fractalType.FastWorley(p+mouse, freq, pers, lacun, 1), result);
 	
 //	result = max( fractalType.Simplex(p+mouse, freq, pers, lacun, 1)*.1, result);
 
 //	result = max(sphere(p1,2)*.1,result);
 //	result = smin ( ( max( (volume(p)*1) ,result)), ( max( (volume(p)*0.1) ,result)) ,.1);
 //	result = smin ( ( max( (volume(p*.99)*.1) ,result)), ( max( (volume(p)*.1) ,result)) ,.1);
-//	result = max( (volume(p)*0.1) ,result);
+	
+//	result = max( (volume(p)*0.1) ,sphere(p,2));
 	
 //	result = smin( box(p+2,1), box(p,2), .2);
 //	result = box(p,2);
 	
-//	return result + saturate(fractalType.FastWorley(p, freq, pers, lacun, 1));
+	return sphere(p,2) + saturate(fractalType.FastWorley(p, freq, pers, lacun, 1));
+//	return sphere(p1,2);
 //	return result * saturate(fractalType.Worley(Euclidean, F1, p, freq, pers, lacun, 1));
-	return result;
+	
+//	float vol =  max( (volume(p+float3(hash1(p.x)*ctrl2.x,hash1(p.y)*ctrl2.x,hash1(p.z)*ctrl2.x)))*.1 ,sphere(p,1));
+//	float vol =  max( (volume(p))*.1 ,sphere(p,1));
+//	return smin(vol,max(sphere(p,1),sphereRepeat(p*ctrl2.z,ctrl2.x)*.1),ctrl2.y);
+//	return vol;
+//	return volume(p)*.1;
+//	return model(p);
+//	return smin(max(sphereRepeat(p*ctrl2.z,ctrl2.x)*.1,box(p,1)),sphere(p,1),.3);
+	
 }
 
 
@@ -322,7 +341,7 @@ float4 PS(VS_OUT input): SV_Target
  	float3 normal = calcNormal(p);
 	
 	
-	float fog = max(1 - 1000/(dist*dist*1),.0);
+	float fog = max(1 - 5/(dist*dist*1),.0);
 	float occ = 1;
 //	occ = calcAO( p, normal);
 //	occ = occ*occ;
@@ -347,8 +366,8 @@ float4 PS(VS_OUT input): SV_Target
 	if(abs(sceneSDF(p)) > .01){
 		col = float4(.8,.8,1,0);
 	}else{
-		col = lerp((float4(.5,.5,.5,0)+fresRefl*float4(.5,.5,1,0))*occ,float4(.8,.8,1,0),fog);
-
+		col = lerp((float4(.5,.5,.5,0)+fresRefl*float4(.6,.6,1,0))*occ,float4(.8,.8,1,0),fog);
+//		col = lerp((float4(.5,.5,.5,0))*occ,float4(.8,.8,1,0),fog);
 	} 
 //	if(abs(sceneSDF(p)) > .1) col.xyz = (1 - fog)*p;
 
