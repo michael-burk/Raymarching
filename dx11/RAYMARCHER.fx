@@ -3,19 +3,11 @@
 //@tags: template
 //@credits: 
 
-SamplerState linearSampler <string uiname="Sampler State";>
-{
-    Filter = MIN_MAG_MIP_LINEAR;
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-};
+
 	float4x4 tVP : LAYERVIEWPROJECTION;	
 	float4x4 tVI: VIEWINVERSE;
 	float4x4 tW : WORLD;
 	float4x4 tPI : PROJECTIONINVERSE;
-
-StructuredBuffer <float3> particles;
-Texture2D depth;
 
 struct VS_IN
 {
@@ -77,22 +69,8 @@ float sphere (float3 p){
 	return (length(p) - 1.5 )*.1;
 }
 
-float particleCloud(float3 p){
-	
-	uint x,m;
-	particles.GetDimensions(x,m);
-	float cloud = sphere(particles[0]+p);
-	for(uint i=1; i < x; i++){
-		cloud = min( (sphere(particles[i]+p)), cloud) ;
-	}
-	return cloud;
-}
-
-float depthTex(float3 p){
-	return -p.z  + (depth.SampleLevel(linearSampler,p.xy*float2(1,-1)*.25+.5,0).r);
-}
-
 float time;
+
 // Distance field function
 float sceneSDF (float3 p)
 {
@@ -104,11 +82,11 @@ float sceneSDF (float3 p)
 //	return max(box(p),sphere(p));
 
 	//Domain Distortion
-//	p1.xyz += 1.000*sin(  2.0*p1.yzx +time)*.9;
-// 	p1.xyz += 0.500*sin(  4.0*p1.yzx -time*15.1)*.9;
-// 	p1.xyz += 0.250*sin(  8.0*p1.yzx +time*10.2)*.9;
-// 	p1.xyz += 0.050*sin( 16.0*p1.yzx -time*14.3)*.9;
-
+	p1.xyz += 1.000*sin(  2.0*p1.yzx +time)*.9;
+    p1.xyz += 0.500*sin(  4.0*p1.yzx -time*15.1)*.9;
+    p1.xyz += 0.250*sin(  8.0*p1.yzx +time*10.2)*.9;
+    p1.xyz += 0.050*sin( 16.0*p1.yzx -time*14.3)*.9;
+	return sphere(p1);
 
 	// Intersect Chamfer
 //	float a = sphere(p+mouse);
@@ -124,17 +102,13 @@ float sceneSDF (float3 p)
 //	return max(max(a, -b), (a + r - b)*sqrt(0.5));
 	
 	// Combine
-	return smin(sphere(p+mouse),sphere(p1),.2);
+//	return smin(sphere(p+mouse),sphere(p1),.2);
 
 	//Pipe
 //	float a = box(p,float3(1.0,1.2,1.0));
 //	float b = box(p,float3(1,1,1));
 //	float r = .1;
 //	return length(float2(a, b)) - r;
-
-	//Depth Tex
-//	return smin(sphere(p1+mouse),depthTex(p),.2);
-//	return depthTex(p);
 }
 
 float hash1( float n )
@@ -165,11 +139,13 @@ float calcAO( in float3 pos, in float3 nor)
     {
         float3 ap = forwardSF( float(i), 64.0 );
 		ap *= sign( dot(ap,nor) ) * hash1(float(i));
-		ao += clamp( sceneSDF( pos + nor*.1 + ap*.3 )*64.0, 0.0, 1.0 );
+//        ao += clamp( sceneSDF( pos + nor*.3 + ap*.5 )*16.0, 0.0, 1.0 );
+		  ao += clamp( sceneSDF( pos + nor*.1 + ap*.3 )*64.0, 0.0, 1.0 );
     }
 	ao /= 64.0;
 	
     return clamp( ao*ao, 0.0, 1.0 );
+//	return 1;
 }
 float3 calcNormal( in float3 pos )
 {
@@ -204,6 +180,7 @@ float raymarch (in float3 eye, in float3 dir)
 
 }
 
+
 float4 PS(VS_OUT input): SV_Target
 {	
 	
@@ -226,8 +203,8 @@ float4 PS(VS_OUT input): SV_Target
 	
 	float fog = max(1 - 1/(1+dist*dist*.15),.0);
 	float occ = 1;
-//	occ = calcAO( p, normal);
-	occ = occ*occ;
+	occ = calcAO( p, normal);
+//	occ = occ*occ;
 
 //	float not_grid = box(p);
 //	if(not_grid > .01)
@@ -248,8 +225,13 @@ float4 PS(VS_OUT input): SV_Target
 	float vdn = -saturate(dot(reflVect,normal));
 	float fresRefl = KrMin + (Kr-KrMin) * pow(1-abs(vdn),FresExp);	
 	
+	
+//	col = lerp(float4(.5,.5,.5,0)+float4(min(normal,0),1)+fresRefl*float4(1,0,0,0),float4(.5,0,1,0),fog);
 	col = lerp((float4(.5,.5,.5,0)+fresRefl*float4(.5,.5,1,0))*occ,float4(.8,.8,1,0),fog);
 
+//	col = fog;
+	
+//	return  lerp(float4(1,1,1,1),float4(0,0,0,1),edge);
 
     return saturate(col);
 }
