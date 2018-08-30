@@ -4,10 +4,10 @@
 //@credits: 
 
 
-	float4x4 tVP : LAYERVIEWPROJECTION;	
-	float4x4 tVI: VIEWINVERSE;
-	float4x4 tW : WORLD;
-	float4x4 tPI : PROJECTIONINVERSE;
+float4x4 tVP : LAYERVIEWPROJECTION;	
+float4x4 tVI: VIEWINVERSE;
+float4x4 tW : WORLD;
+float4x4 tPI : PROJECTIONINVERSE;
 
 struct VS_IN
 {
@@ -30,20 +30,38 @@ VS_OUT VS(VS_IN input)
     return output;
 }
 
+struct GBuffer {
+	float4 pos 	  : SV_Target0;
+	float4 normal : SV_Target1;
+	float2 uv  	  : SV_Target2;
+	float  depth  : SV_DEPTH;
+};
+
 float3 mouse;
 
 	// Shapes
 	//-------------------------------
-	static const float3 myBox = float3(1, 1, 1);
+	static const float3 myBox = float3(.25, 2, 2);
 	//-------------------------------
 	
 
+float hash1( float n )
+{
+    return frac(sin(n)*43758.5453123);
+}
+
+float hash1( in float2 f ) 
+{ 
+    return frac(sin(f.x+131.1*f.y)*43758.5453123); 
+}
+
+static const float PI = 3.1415926535897932384626433832795;
+static const float PHI = 1.6180339887498948482045868343656;
 
 float3 UVtoEYE(float2 UV){
 	return normalize( mul(float4(mul(float4((UV.xy*2-1)*float2(1,-1),0,1),tPI).xy,1,0),tVI).xyz);
 }
 
-// polynomial smooth min (k = 0.1);
 float smin( float a, float b, float k )
 {
     float h = clamp( 0.5+0.5*(b-a)/k, 0.0, 1.0 );
@@ -60,14 +78,6 @@ float plane (float3 p){
 }
 
 float sphere (float3 p){
-
-	//Repeat
-//	p = 1 - frac(p)*2;
-
-	// Displaced Sphere + Mouse
-//	p+=mouse;
-//	return (length(p+mouse) - .5 ) +  (sin(10*p.x)*sin(10*p.y)*sin(10*p.z))*.1;
-
 	// Simple Sphere
 	return (length(p) - 1.5 )*.1;
 }
@@ -75,6 +85,11 @@ float sphere (float3 p){
 float sphere1 (float3 p){
 	// Simple Sphere
 	return (length(p) - 1 )*.1;
+}
+
+float sphereD (float3 p, float d){
+	// Simple Sphere
+	return (length(p) - d )*.1;
 }
 
 float time;
@@ -86,14 +101,17 @@ float sceneSDF (float3 p)
 
 //	float x = 1;
 //	//Domain Distortion
-//	p1.xyz += 1.000 * x * sin(  2.0  * p1.yzx +time		    * 1 );
+//	  p1.xyz += 1.000 * x * sin(  2.0  * p1.yzx +time		  * 1 );
 //    p1.xyz += 0.500 * x * sin(  4.0  * p1.yzx -time * 15.1  * 1 );
 //    p1.xyz += 0.250 * x * sin(  8.0  * p1.yzx +time * 10.2  * 1 );
 //    p1.xyz += 0.050 * x * sin( 16.0  * p1.yzx -time * 14.3  * 1 );
 	
 //	return max( min( max(-sphere(p1), box(p, myBox) ), box(p, myBox) ), -sphere1(p+mouse));
 	
-	return( max(box(p, myBox), -sphere1(p+mouse)) );
+//	return( max(box(p, myBox), -sphere1(p+mouse)) );
+	
+	return( max(sphereD(p,1), -box(p+mouse,myBox) ));
+
 //	return sphere(p1);
 
 	// Intersect Chamfer
@@ -119,18 +137,6 @@ float sceneSDF (float3 p)
 //	return length(float2(a, b)) - r;
 }
 
-float hash1( float n )
-{
-    return frac(sin(n)*43758.5453123);
-}
-
-float hash1( in float2 f ) 
-{ 
-    return frac(sin(f.x+131.1*f.y)*43758.5453123); 
-}
-
-static const float PI = 3.1415926535897932384626433832795;
-static const float PHI = 1.6180339887498948482045868343656;
 
 float3 forwardSF( float i, float n) 
 {
@@ -184,11 +190,12 @@ float raymarch (in float3 eye, in float3 dir)
 }
 
 
-float4 PS(VS_OUT input): SV_Target
+GBuffer PS(VS_OUT input)
 {	
 	
+	GBuffer output;
 	
-
+	uint mID = 0;
 	
 	float4 col = 0;
 	float3 normal = 0;
@@ -205,7 +212,7 @@ float4 PS(VS_OUT input): SV_Target
 	
 	// Avoid artifacts for infinite distances
 //	if(abs(sceneSDF (eye + dir)) > .5) discard;
-//	if(dist>MAX_DIST) discard;
+	if(dist>MAX_DIST) discard;
  	if(dist<MAX_DIST) normal = calcNormal(p);
 	
 	
@@ -221,12 +228,12 @@ float4 PS(VS_OUT input): SV_Target
 //	}
 		
 	// FRESNEL CALCS 
-	float KrMin = 0;
-	float Kr =1;
-	float FresExp = 2;
-	float3 reflVect = reflect(dir,normal);
-	float vdn = -saturate(dot(reflVect,normal));
-	float fresRefl = KrMin + (Kr-KrMin) * pow(1-abs(vdn),FresExp);	
+//	float KrMin = 0;
+//	float Kr =1;
+//	float FresExp = 2;
+//	float3 reflVect = reflect(dir,normal);
+//	float vdn = -saturate(dot(reflVect,normal));
+//	float fresRefl = KrMin + (Kr-KrMin) * pow(1-abs(vdn),FresExp);	
 //	
 //	col = lerp((float4(.5,.5,.5,0)+fresRefl*float4(.5,.5,1,0))*occ,float4(.8,.8,1,0),fog);
 //
@@ -241,11 +248,24 @@ float4 PS(VS_OUT input): SV_Target
     p1.xyz += 0.250 * x * sin(  8.0  * p1.yzx +time * 10.2  * 1 );
     p1.xyz += 0.050 * x * sin( 16.0  * p1.yzx -time * 14.3  * 1 );
 
-	if( max(-sphere(p1), box(p, myBox )) < .01 ) col = float4(1,0,0,0);
-	else if( box(p, myBox ) < .01 ) col = float4(0,0,1,0);
+	if( max(-sphere(p1), sphereD(p,1)) < .001 ){
+		mID = 0;
+		col = float4(1,0,0,0);
+	} 
+	else if( sphereD(p,1) < .001 ){
+		mID = 1;
+		col = float4(0,0,1,0);
+	} 
 	
 //	else col = float4(0,0,1,0);
-	return col + fresRefl;
+	float4 PosWVP = mul(float4(p.xyz,1),tVP);
+	
+	output.pos = float4(p.xyz,1);
+	output.normal = float4(normal, (float) mID * .001 );
+	output.uv = 1;
+
+	output.depth = PosWVP.z/PosWVP.w;
+	return output;
 
 //	return dist*.1;
 }
