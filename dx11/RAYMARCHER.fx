@@ -32,6 +32,11 @@ VS_OUT VS(VS_IN input)
 
 float3 mouse;
 
+	// Shapes
+	//-------------------------------
+	static const float3 myBox = float3(1, 1, 1);
+	//-------------------------------
+	
 
 
 float3 UVtoEYE(float2 UV){
@@ -46,8 +51,6 @@ float smin( float a, float b, float k )
 }
 
 float box (float3 p, float3 size){
-//	p = 1 - frac(p)*2;
-//	p = abs(p) - float3(.05,.5,.05)+  (sin(10*p.x)*sin(10*p.y)*sin(10*p.z))*.03;
 	p = abs(p) - size;
 	return max(p.x,max(p.y,p.z));
 }
@@ -69,24 +72,29 @@ float sphere (float3 p){
 	return (length(p) - 1.5 )*.1;
 }
 
+float sphere1 (float3 p){
+	// Simple Sphere
+	return (length(p) - 1 )*.1;
+}
+
 float time;
 
 // Distance field function
 float sceneSDF (float3 p)
 {
 	float3 p1 = p;
-//	return lerp(box(p),sphere(p),.5);
 
-//	return smin(box(p),sphere(p),.2);
-
-//	return max(box(p),sphere(p));
-
-	//Domain Distortion
-	p1.xyz += 1.000*sin(  2.0*p1.yzx +time)*.9;
-    p1.xyz += 0.500*sin(  4.0*p1.yzx -time*15.1)*.9;
-    p1.xyz += 0.250*sin(  8.0*p1.yzx +time*10.2)*.9;
-    p1.xyz += 0.050*sin( 16.0*p1.yzx -time*14.3)*.9;
-	return sphere(p1);
+//	float x = 1;
+//	//Domain Distortion
+//	p1.xyz += 1.000 * x * sin(  2.0  * p1.yzx +time		    * 1 );
+//    p1.xyz += 0.500 * x * sin(  4.0  * p1.yzx -time * 15.1  * 1 );
+//    p1.xyz += 0.250 * x * sin(  8.0  * p1.yzx +time * 10.2  * 1 );
+//    p1.xyz += 0.050 * x * sin( 16.0  * p1.yzx -time * 14.3  * 1 );
+	
+//	return max( min( max(-sphere(p1), box(p, myBox) ), box(p, myBox) ), -sphere1(p+mouse));
+	
+	return( max(box(p, myBox), -sphere1(p+mouse)) );
+//	return sphere(p1);
 
 	// Intersect Chamfer
 //	float a = sphere(p+mouse);
@@ -138,14 +146,13 @@ float calcAO( in float3 pos, in float3 nor)
     for( int i=0; i<64; i++ )
     {
         float3 ap = forwardSF( float(i), 64.0 );
-		ap *= sign( dot(ap,nor) ) * hash1(float(i));
+		  ap *= sign( dot(ap,nor) ) * hash1(float(i));
 //        ao += clamp( sceneSDF( pos + nor*.3 + ap*.5 )*16.0, 0.0, 1.0 );
 		  ao += clamp( sceneSDF( pos + nor*.1 + ap*.3 )*64.0, 0.0, 1.0 );
     }
 	ao /= 64.0;
 	
     return clamp( ao*ao, 0.0, 1.0 );
-//	return 1;
 }
 float3 calcNormal( in float3 pos )
 {
@@ -165,16 +172,12 @@ float raymarch (in float3 eye, in float3 dir)
 {
 	float t = 0.0;
 	float dist = .1;
-	for (uint i = 0 ; i < 1024 ; i++)
+	for (uint i = 0 ; i < 512 ; i++)
 	{	
-		
 		if(dist < EPSILON || dist > MAX_DIST) break;
-		
 		dist = sceneSDF (eye + dir*t);
 		t += dist * 0.5;
 	}
-	
-
 //	if( t>MAX_DIST ) t=-1.0;
 	return t;
 
@@ -184,9 +187,12 @@ float raymarch (in float3 eye, in float3 dir)
 float4 PS(VS_OUT input): SV_Target
 {	
 	
-	float4 col;
 	
-//	float3 p;
+
+	
+	float4 col = 0;
+	float3 normal = 0;
+
 	// Ray Origin
 	float3 eye = tVI[3].xyz;
 
@@ -194,16 +200,18 @@ float4 PS(VS_OUT input): SV_Target
 	float3 dir = UVtoEYE(input.uv.xy);
 	
 	float edge = 0;
-//	float dist = raymarchEdge(eye,dir,edge);
 	float dist = raymarch(eye,dir);
 	float3 p = eye + dist * dir;
-
- 	float3 normal = calcNormal(p);
+	
+	// Avoid artifacts for infinite distances
+//	if(abs(sceneSDF (eye + dir)) > .5) discard;
+//	if(dist>MAX_DIST) discard;
+ 	if(dist<MAX_DIST) normal = calcNormal(p);
 	
 	
-	float fog = max(1 - 1/(1+dist*dist*.15),.0);
-	float occ = 1;
-	occ = calcAO( p, normal);
+//	float fog = max(1 - 1/(1+dist*dist*.15),.0);
+//	float occ = 1;
+//	occ = calcAO( p, normal);
 //	occ = occ*occ;
 
 //	float not_grid = box(p);
@@ -211,12 +219,7 @@ float4 PS(VS_OUT input): SV_Target
 //	{
 //		col.rgb *= saturate(abs(frac(not_grid*10)*2-1)*10);
 //	}
-	
-	// Avoid artifacts for infinite distances
-//	if(abs(map(p)) > .1) discard;
-//	if(abs(map(p)) > .1) col.xyz = (1 - fog)*p;
-
-	
+		
 	// FRESNEL CALCS 
 	float KrMin = 0;
 	float Kr =1;
@@ -224,20 +227,28 @@ float4 PS(VS_OUT input): SV_Target
 	float3 reflVect = reflect(dir,normal);
 	float vdn = -saturate(dot(reflVect,normal));
 	float fresRefl = KrMin + (Kr-KrMin) * pow(1-abs(vdn),FresExp);	
-	
-	
-//	col = lerp(float4(.5,.5,.5,0)+float4(min(normal,0),1)+fresRefl*float4(1,0,0,0),float4(.5,0,1,0),fog);
-	col = lerp((float4(.5,.5,.5,0)+fresRefl*float4(.5,.5,1,0))*occ,float4(.8,.8,1,0),fog);
+//	
+//	col = lerp((float4(.5,.5,.5,0)+fresRefl*float4(.5,.5,1,0))*occ,float4(.8,.8,1,0),fog);
+//
+//    return saturate(col);
 
-//	col = fog;
+	float3 p1 = p;	
 	
-//	return  lerp(float4(1,1,1,1),float4(0,0,0,1),edge);
+	float x = 1;
+	//Domain Distortion
+	p1.xyz += 1.000 * x * sin(  2.0  * p1.yzx +time		    * 1 );
+    p1.xyz += 0.500 * x * sin(  4.0  * p1.yzx -time * 15.1  * 1 );
+    p1.xyz += 0.250 * x * sin(  8.0  * p1.yzx +time * 10.2  * 1 );
+    p1.xyz += 0.050 * x * sin( 16.0  * p1.yzx -time * 14.3  * 1 );
 
-    return saturate(col);
+	if( max(-sphere(p1), box(p, myBox )) < .01 ) col = float4(1,0,0,0);
+	else if( box(p, myBox ) < .01 ) col = float4(0,0,1,0);
+	
+//	else col = float4(0,0,1,0);
+	return col + fresRefl;
+
+//	return dist*.1;
 }
-
-
-
 
 
 technique10 Constant

@@ -252,24 +252,22 @@
    <LINKPOINT x="7065" y="1890">
    </LINKPOINT>
    </LINK>
-   <NODE systemname="RAYMARCHER (DX11.Effect)" filename="dx11\RAYMARCHER.fx" nodename="RAYMARCHER (DX11.Effect)" componentmode="Hidden" id="115">
+   <NODE systemname="RAYMARCHER (DX11.Effect)" filename="dx11\RAYMARCHER.fx" nodename="RAYMARCHER (DX11.Effect)" componentmode="Hidden" id="112">
    <BOUNDS type="Node" left="1590" top="3465" width="1905" height="270">
    </BOUNDS>
    </NODE>
-   <LINK srcnodeid="3" srcpinname="Geometry Out" dstnodeid="115" dstpinname="Geometry">
+   <LINK srcnodeid="3" srcpinname="Geometry Out" dstnodeid="112" dstpinname="Geometry">
    </LINK>
-   <LINK srcnodeid="12" srcpinname="XYZ" dstnodeid="115" dstpinname="mouseXYZ">
+   <LINK srcnodeid="12" srcpinname="XYZ" dstnodeid="112" dstpinname="mouseXYZ">
    </LINK>
-   <LINK srcnodeid="115" srcpinname="Query" dstnodeid="17" dstpinname="Query Source" linkstyle="Bezier">
+   <LINK srcnodeid="112" srcpinname="Query" dstnodeid="17" dstpinname="Query Source" linkstyle="Bezier">
    <LINKPOINT x="3495" y="4125">
    </LINKPOINT>
    <LINKPOINT x="5790" y="4125">
    </LINKPOINT>
    </LINK>
-   <LINK srcnodeid="22" srcpinname="Position Out" dstnodeid="115" dstpinname="time">
+   <LINK srcnodeid="22" srcpinname="Position Out" dstnodeid="112" dstpinname="time">
    </LINK>
-   <LINK srcnodeid="115" srcpinname="Layer" dstnodeid="1" dstpinname="Layer">
-   </LINK>
-   <LINK srcnodeid="10" srcpinname="Position (Projection) XY" dstnodeid="19" dstpinname="Input 1">
+   <LINK srcnodeid="112" srcpinname="Layer" dstnodeid="1" dstpinname="Layer">
    </LINK>
    </PATCH>
