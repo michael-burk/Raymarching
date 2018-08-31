@@ -23,7 +23,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="645" top="1095" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Color Input" slicecount="1" visible="1" values="|0.60055,0.60055,0.60055,1.00000|">
+   <PIN pinname="Color Input" slicecount="1" visible="1" values="|0.49676,0.49676,0.49676,1.00000|">
    </PIN>
    <PIN pinname="Descriptive Name" slicecount="1" values="|Global Reflection Color|">
    </PIN>
@@ -201,7 +201,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="6720" top="750" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="2">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -288,16 +288,6 @@
    </LINK>
    <LINK srcnodeid="220" srcpinname="Output" dstnodeid="231" dstpinname="GlobalSettings">
    </LINK>
-   <NODE systemname="POINT LIGHT" filename="POINT LIGHT.v4p" nodename="POINT LIGHT.v4p" componentmode="Hidden" id="232">
-   <BOUNDS type="Node" left="3030" top="3945" width="100" height="100">
-   </BOUNDS>
-   <BOUNDS type="Window" left="1035" top="4695" width="14460" height="10410">
-   </BOUNDS>
-   <BOUNDS type="Box" left="3030" top="3945">
-   </BOUNDS>
-   <PIN pinname="SpotLights" visible="1">
-   </PIN>
-   </NODE>
    <LINK srcnodeid="226" srcpinname="Output" dstnodeid="231" dstpinname="IBLSettings">
    </LINK>
    <NODE systemname="SpotLight (SuperPhysical Light)" filename="%VVVV%\packs\SuperPhysical\nodes\vl\VVVV.Value.SuperPhysical.vl" nodename="SpotLight (SuperPhysical Light)" componentmode="Hidden" id="233">
@@ -307,23 +297,49 @@
    </PIN>
    <PIN pinname="Helper" slicecount="1" values="1">
    </PIN>
-   <PIN pinname="Distance" slicecount="1" values="3.28">
+   <PIN pinname="Distance" slicecount="1" values="3.05">
    </PIN>
-   <PIN pinname="Pitch" slicecount="1" values="0.2">
+   <PIN pinname="Pitch" slicecount="1" values="0.16">
    </PIN>
-   <PIN pinname="Yaw" slicecount="1" values="-0.75">
+   <PIN pinname="Yaw" slicecount="1" values="-1.3" visible="1">
    </PIN>
-   <PIN pinname="Color" slicecount="1" values="|1.00000,1.00000,1.00000,1.00000|">
+   <PIN pinname="Color" slicecount="1" values="|0.97590,0.24058,0.72339,1.00000|" visible="1">
    </PIN>
-   <PIN pinname="FOV" slicecount="1" values="0.2">
+   <PIN pinname="FOV" slicecount="1" values="0.13">
    </PIN>
    <PIN pinname="Range" slicecount="1" values="8">
    </PIN>
    <PIN pinname="Enabled" slicecount="1" values="1">
    </PIN>
-   <PIN pinname="LightIntensity" slicecount="1" values="2">
+   <PIN pinname="LightIntensity" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Shadow" visible="1">
    </PIN>
    </NODE>
    <LINK srcnodeid="233" srcpinname="SpotLights" dstnodeid="231" dstpinname="SpotLightSettings">
+   </LINK>
+   <NODE systemname="Shadow (SuperPhysical Shadow)" filename="%VVVV%\packs\SuperPhysical\nodes\vl\VVVV.Value.SuperPhysical.vl" nodename="Shadow (SuperPhysical Shadow)" componentmode="Hidden" id="234">
+   <BOUNDS type="Node" left="3495" top="3810" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   <PIN pinname="ShadowRes" slicecount="1" values="256">
+   </PIN>
+   <PIN pinname="ShadowBlurWidth" slicecount="1" values="0.1">
+   </PIN>
+   <PIN pinname="Enabled" slicecount="1" values="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="234" srcpinname="Output" dstnodeid="233" dstpinname="Shadow">
+   </LINK>
+   <NODE nodename="IOBox (Color)" componentmode="InABox" id="236">
+   <BOUNDS type="Box" left="2850" top="2955" width="2250" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="2850" top="2955" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Color Input" slicecount="1" visible="1" values="|0.82528,0.24654,1.00000,1.00000|">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="236" srcpinname="Color Output" dstnodeid="233" dstpinname="Color">
    </LINK>
    </PATCH>

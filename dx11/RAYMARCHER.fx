@@ -37,11 +37,16 @@ struct GBuffer {
 	float  depth  : SV_DEPTH;
 };
 
+struct vsm {
+	float2 vsm 	  : SV_Target0;
+	float  depth  : SV_DEPTH;
+};
+
 float3 mouse;
 
 	// Shapes
 	//-------------------------------
-	static const float3 myBox = float3(.25, 2, 2);
+	static const float3 myBox = float3(1, 1, 1);
 	//-------------------------------
 	
 float time;
@@ -90,7 +95,7 @@ float sphere1 (float3 p){
 
 float sphereD (float3 p, float d){
 	// Simple Sphere
-	return (length(p) - d )*.1;
+	return (length(p) - d )*1;
 }
 	// Spherical UVs
 
@@ -130,23 +135,54 @@ float sphereD (float3 p, float d){
 	}
 
 
-
-// Distance field function
-float sceneSDF (float3 p)
-{
-	float3 p1 = p;
-	
-	return( max(sphereD(p,1), -box(p+mouse,myBox) ));
-
-}
-
-
 float3 forwardSF( float i, float n) 
 {
     float phi = 2.0*PI*frac(i/PHI);
     float zi = 1.0 - (2.0*i+1.0)/n;
     float sinTheta = sqrt( 1.0 - zi*zi);
     return float3( cos(phi)*sinTheta, sin(phi)*sinTheta, zi);
+}
+
+float3 opTwist( float3 p )
+{
+    float c = cos(4.0*p.y);
+    float s = sin(2.0*p.y);
+    float2x2  m = float2x2(c,-s,s,c);
+    float3  q = float3(mul(m,p.xz),p.y);
+    return q;
+}
+
+float fOpUnionStairs(float a, float b, float r, float n) 
+{
+	float s = r/n;
+	float u = b-r;
+	return min(min(a,b), 0.5 * (u + a + abs (( abs((u - a + s) % (2 * s))) - s)));
+}
+
+
+float fOpIntersectionStairs(float a, float b, float r, float n) 
+{
+	return -fOpUnionStairs(-a, -b, r, n);
+}
+
+float fOpIntersectionChamfer(float a, float b, float r) 
+{
+	return max(max(a, b), (a + r + b)*sqrt(0.5));
+}
+
+// Distance field function
+float sceneSDF (float3 p)
+{
+	float a = box(opTwist(p*2),float3(1,1,1))*.1;
+	float b = -box(p+mouse,myBox);
+//	float b = sphereD(p+mouse,.5);
+	
+//	return fOpIntersectionStairs(a,b,.03,5);
+	return fOpIntersectionChamfer(a,b,.005);
+
+//	return max( box(opTwist(p*2),float3(1,1,1))*.1,-box(p+mouse,myBox));
+
+
 }
 
 float calcAO( in float3 pos, in float3 nor)
@@ -177,6 +213,7 @@ static const float MAX_DIST = 10.0;
 static const float EPSILON = .001;
 
 
+
 float raymarch (in float3 eye, in float3 dir)
 {
 	float t = 0.0;
@@ -190,6 +227,8 @@ float raymarch (in float3 eye, in float3 dir)
 	return t;
 
 }
+
+
 
 
 GBuffer PS(VS_OUT input)
@@ -229,21 +268,58 @@ GBuffer PS(VS_OUT input)
 
 	if( -sphere(p1) < .001 ){
 		mID = 0;
-//		col = float4(1,0,0,0);
 	} 
-	else if( sphereD(p,1) < .001 ){
+	else if( sphereD(p,3) < .001 ){
 		mID = 1;
-//		col = float4(0,0,1,0);
 	} 
 	float4 PosWVP = mul(float4(p.xyz,1),tVP);
 	
 	output.pos = float4(p.xyz,1);
 	output.normal = float4(normal, (float) mID * .001 );
-	output.uv = CubicUV(p.xyz, normal);
+//	output.uv = CubicUV(p.xyz, normal);
+	output.uv = 0;
 	output.depth = PosWVP.z/PosWVP.w;
+	
 	return output;
 }
 
+float3 lightPos;
+float  lightRange;
+
+vsm PS_VSM(VS_OUT input)
+{	
+	vsm output;
+	uint mID = 0;
+	
+//	float4 col = 0;
+	float3 normal = 0;
+
+	// Ray Origin
+	float3 eye = tVI[3].xyz;
+
+	// Ray Direction
+	float3 dir = UVtoEYE(input.uv.xy);
+	
+	float edge = 0;
+	float dist = raymarch(eye,dir);
+	float3 p = eye + dist * dir;
+	
+	// Avoid artifacts for infinite distances
+//	if(abs(sceneSDF (eye + dir)) > .5) discard;
+	if(dist>MAX_DIST) discard;
+ 	if(dist<MAX_DIST) normal = calcNormal(p);
+	
+	float worldSpaceDistance = distance(lightPos, p.xyz);
+	float2 vsm;
+	vsm.x = (worldSpaceDistance / lightRange) + .01;
+	vsm.y = vsm.x * vsm.x;
+	
+	output.vsm = vsm;
+	
+	float4 PosWVP = mul(float4(p.xyz,1),tVP);
+	output.depth = PosWVP.z/PosWVP.w;
+	return output;
+}
 
 technique10 Constant
 {
@@ -253,6 +329,16 @@ technique10 Constant
 		SetPixelShader( CompileShader( ps_5_0, PS() ) );
 	}
 }
+
+technique10 VSM
+{
+	pass P0
+	{
+		SetVertexShader( CompileShader( vs_4_0, VS() ) );
+		SetPixelShader( CompileShader( ps_5_0, PS_VSM() ) );
+	}
+}
+
 
 
 
