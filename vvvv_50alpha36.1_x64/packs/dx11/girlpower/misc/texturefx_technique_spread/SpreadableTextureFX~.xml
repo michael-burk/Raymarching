@@ -1,0 +1,167 @@
+<!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv45beta33.7.dtd" >
+   <PATCH nodename="E:\repositories\dx11-vvvv\girlpower\girlpower\misc\texturefx_technique_spread\SpreadableTextureFX.v4p" systemname="SpreadableTextureFX" filename="E:\repositories\dx11-vvvv\Deploy\Debug\x64\SpreadableTextureFX.v4p" scrollx="0" scrolly="2160">
+   <BOUNDS type="Window" left="2505" top="2430" width="12840" height="12150">
+   </BOUNDS>
+   <PACK Name="dx11" Version="1.3">
+   </PACK>
+   <PACK Name="addonpack" Version="33.7.0">
+   </PACK>
+   <NODE systemname="GetSlice (Node)" nodename="GetSlice (Node)" componentmode="Hidden" id="3">
+   <BOUNDS type="Node" left="1515" top="9060" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input Node" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Output Node" visible="1">
+   </PIN>
+   <PIN pinname="Index" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="GetSlice (Node)" nodename="GetSlice (Node)" componentmode="Hidden" id="4">
+   <BOUNDS type="Node" left="5925" top="9150" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Input Node" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Output Node" visible="1">
+   </PIN>
+   <PIN pinname="Index" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="Preview (DX11.Texture)" filename="%VVVV%\packs\dx11\nodes\plugins\base\VVVV.DX11.Nodes.dll" nodename="Preview (DX11.Texture)" componentmode="InABox" id="5">
+   <BOUNDS type="Node" left="1515" top="9630" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="1515" top="9630" width="3375" height="2910">
+   </BOUNDS>
+   <BOUNDS type="Window" left="12360" top="2535" width="6240" height="5085">
+   </BOUNDS>
+   <PIN pinname="Texture In" visible="1" slicecount="1" values="||">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="3" srcpinname="Output Node" dstnodeid="5" dstpinname="Texture In">
+   </LINK>
+   <NODE systemname="Preview (DX11.Texture)" filename="%VVVV%\packs\dx11\nodes\plugins\base\VVVV.DX11.Nodes.dll" nodename="Preview (DX11.Texture)" componentmode="InABox" id="7">
+   <BOUNDS type="Node" left="5925" top="9660" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="5925" top="9660" width="3120" height="2805">
+   </BOUNDS>
+   <BOUNDS type="Window" left="6195" top="8625" width="6240" height="5085">
+   </BOUNDS>
+   <PIN pinname="Texture In" visible="1" slicecount="1" values="||">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="4" srcpinname="Output Node" dstnodeid="7" dstpinname="Texture In">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="8" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="2115" top="8550" width="795" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="2115" top="8550" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Integer">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="8" srcpinname="Y Output Value" dstnodeid="3" dstpinname="Index">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="9" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="6540" top="8655" width="795" height="240">
+   </BOUNDS>
+   <BOUNDS type="Node" left="6540" top="8655" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Integer">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="9" srcpinname="Y Output Value" dstnodeid="4" dstpinname="Index">
+   </LINK>
+   <NODE systemname="FileTexture (DX11 2d)" filename="%VVVV%\packs\dx11\nodes\plugins\base\VVVV.DX11.Nodes.dll" nodename="FileTexture (DX11 2d)" componentmode="Hidden" id="10">
+   <BOUNDS type="Node" left="2010" top="5280" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Texture Out" visible="1">
+   </PIN>
+   <PIN pinname="Filename" slicecount="1" values="earth_512x512.jpg">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (Enumerations)" componentmode="InABox" id="11" systemname="IOBox (Enumerations)">
+   <BOUNDS type="Box" left="7095" top="2325" width="1875" height="885">
+   </BOUNDS>
+   <BOUNDS type="Node" left="7095" top="2325" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Input Enum" slicecount="2" visible="1" values="Invert,GrayScale">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="SliceCount Mode" slicecount="1" values="ColsRowsPages">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="Technique">
+   </PIN>
+   </NODE>
+   <NODE systemname="FXSpread (DX11.TextureFX)" filename="texture11\FXSpread.tfx" nodename="FXSpread (DX11.TextureFX)" componentmode="Hidden" id="2">
+   <BOUNDS type="Node" left="2910" top="6360" width="3075" height="270">
+   </BOUNDS>
+   <PIN pinname="Technique" slicecount="1" visible="1" values="Invert">
+   </PIN>
+   <PIN pinname="Texture Out" visible="1">
+   </PIN>
+   <PIN pinname="Texture In" visible="1">
+   </PIN>
+   <PIN pinname="blendAmount" visible="1" slicecount="1" values="0.68">
+   </PIN>
+   <PIN pinname="effectAmount" visible="1" slicecount="1" values="0.73">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="2" srcpinname="Texture Out" dstnodeid="3" dstpinname="Input Node" linkstyle="Bezier">
+   <LINKPOINT x="2965" y="7698">
+   </LINKPOINT>
+   <LINKPOINT x="1505" y="7978">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="2" srcpinname="Texture Out" dstnodeid="4" dstpinname="Input Node" linkstyle="Bezier">
+   <LINKPOINT x="3040" y="7735">
+   </LINKPOINT>
+   <LINKPOINT x="5855" y="8015">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="10" srcpinname="Texture Out" dstnodeid="2" dstpinname="Texture In" linkstyle="VHV">
+   <LINKPOINT x="2070" y="5940">
+   </LINKPOINT>
+   <LINKPOINT x="2895" y="5940">
+   </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="11" srcpinname="Output Enum" dstnodeid="2" dstpinname="Technique" linkstyle="VHV">
+   <LINKPOINT x="6555" y="4268">
+   </LINKPOINT>
+   <LINKPOINT x="4260" y="5273">
+   </LINKPOINT>
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="17" systemname="IOBox (Value Advanced)">
+   <BOUNDS type="Box" left="4755" top="3000" width="795" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="4755" top="3000" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="0.75,1">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="Vector Size" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="Default" slicecount="1" values="|0, 0|">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="blendAmount">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="17" srcpinname="Y Output Value" dstnodeid="2" dstpinname="blendAmount">
+   </LINK>
+   </PATCH>
