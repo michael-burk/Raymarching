@@ -1,5 +1,5 @@
 <!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv50alpha36.1.dtd" >
-   <PATCH nodename="C:\Users\Michael\Desktop\PROJECTS\Raymarching\Raymarching.v4p" systemname="Raymarching" filename="C:\Projects\RAYMARCHING\Raymarching.v4p" scrollx="210" scrolly="0" locked="0">
+   <PATCH nodename="C:\Users\Michael\Desktop\PROJECTS\Raymarching\Raymarching.v4p" systemname="Raymarching" filename="C:\Projects\RAYMARCHING\Raymarching.v4p" scrollx="0" scrolly="75" locked="0">
    <BOUNDS type="Window" left="1305" top="1110" width="14325" height="13425">
    </BOUNDS>
    <PACK Name="addonpack" Version="36.0.0">
@@ -131,7 +131,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="6855" top="1500" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="60">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="12">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -384,8 +384,6 @@
    <PIN pinname="Projection" visible="1">
    </PIN>
    <PIN pinname="PositionXYZ" visible="1">
-   </PIN>
-   <PIN pinname="Filter Time" slicecount="1" values="1">
    </PIN>
    </NODE>
    <LINK srcnodeid="134" srcpinname="View" dstnodeid="125" dstpinname="View" linkstyle="Bezier">

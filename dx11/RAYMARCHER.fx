@@ -46,7 +46,7 @@ float3 mouse;
 
 	// Shapes
 	//-------------------------------
-	static const float3 myBox = float3(.25, 2, 2);
+	static const float3 myBox = float3(.2, 2, 2);
 	//-------------------------------
 	
 float time;
@@ -149,7 +149,8 @@ float3 opTwist( float3 p )
     float s = sin(2.0*p.y);
     float2x2  m = float2x2(c,-s,s,c);
     float3  q = float3(mul(m,p.xz),p.y);
-    return q;
+//    return sin(q.xz*1).xyx + q;
+	return q;
 }
 
 float fOpUnionStairs(float a, float b, float r, float n) 
@@ -178,9 +179,10 @@ float sceneSDF (float3 p)
 	float b = sphereD(p+mouse,.5);
 	
 //	return fOpIntersectionStairs(a,b,.03,5);
-	return fOpIntersectionChamfer(a,b,.005);
+	return smin( fOpIntersectionChamfer(a,b,.005), box(p+float3(0,.5,0), float3(2,.1,2)),.3 );
 
 //	return max( box(opTwist(p*2),float3(1,1,1))*.1,-box(p+mouse,myBox));
+
 
 
 }
@@ -269,7 +271,8 @@ GBuffer PS(VS_OUT input)
 	} 
 	else if( sphereD(p,3) < .001 ){
 		mID = 1;
-	} 
+	}
+	
 	float4 PosWVP = mul(float4(p.xyz,1),tVP);
 	
 	output.pos = float4(p.xyz,1);

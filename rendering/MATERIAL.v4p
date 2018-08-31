@@ -1,5 +1,5 @@
 <!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv50alpha36.1.dtd" >
-   <PATCH nodename="C:\Users\Michael\Desktop\PROJECTS\Raymarching\rendering\MATERIAL.v4p" systemname="MATERIAL" filename="C:\Users\Michael\Desktop\PROJECTS\Raymarching\rendering\MATERIAL.v4p" scrollx="0" scrolly="15">
+   <PATCH nodename="C:\Users\Michael\Desktop\PROJECTS\Raymarching\rendering\MATERIAL.v4p" systemname="MATERIAL" filename="C:\Users\Michael\Desktop\PROJECTS\Raymarching\rendering\MATERIAL.v4p" scrollx="0" scrolly="0">
    <BOUNDS type="Window" left="2505" top="1620" width="14895" height="13320">
    </BOUNDS>
    <PACK Name="addonpack" Version="36.0.0">
@@ -127,7 +127,7 @@
    </PIN>
    <PIN pinname="Spread Count" slicecount="1" visible="1" values="10">
    </PIN>
-   <PIN pinname="Input" slicecount="1" visible="1" values="-1.07">
+   <PIN pinname="Input" slicecount="1" visible="1" values="-0.72">
    </PIN>
    <PIN pinname="Phase" slicecount="1" values="0">
    </PIN>
@@ -139,7 +139,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="14100" top="4515" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="60">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="120">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -165,7 +165,7 @@
    </PIN>
    <PIN pinname="Hue" visible="1" slicecount="1" values="0.333333333333333">
    </PIN>
-   <PIN pinname="Saturation" slicecount="1" values="1">
+   <PIN pinname="Saturation" slicecount="1" values="0.3">
    </PIN>
    <PIN pinname="Alpha" slicecount="1" values="1">
    </PIN>
@@ -196,7 +196,7 @@
    <PIN pinname="String Type" slicecount="1" values="MultiLine">
    </PIN>
    </NODE>
-   <PACK Name="dx11" Version="1.0.5">
+   <PACK Name="dx11" Version="1.3.1.1">
    </PACK>
    <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="156">
    <BOUNDS type="Node" left="16425" top="5955" width="100" height="100">
@@ -491,7 +491,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="11070" top="6900" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="2.1">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0.1">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -516,26 +516,6 @@
    </LINK>
    <LINK srcnodeid="241" srcpinname="Y Output Value" dstnodeid="253" dstpinname="SSSFalloff">
    </LINK>
-   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="254" systemname="IOBox (Value Advanced)">
-   <BOUNDS type="Box" left="11865" top="6390" width="795" height="240">
-   </BOUNDS>
-   <BOUNDS type="Node" left="11865" top="6390" width="0" height="0">
-   </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0.1">
-   </PIN>
-   <PIN pinname="Units" slicecount="1" values="||">
-   </PIN>
-   <PIN pinname="Precision" slicecount="1" values="4">
-   </PIN>
-   <PIN pinname="Descriptive Name" slicecount="1" values="SSSAmount">
-   </PIN>
-   <PIN pinname="X Input Value" slicecount="1" values="0">
-   </PIN>
-   <PIN pinname="Pin Visibility" slicecount="1" values="False">
-   </PIN>
-   <PIN pinname="Y Output Value" visible="1">
-   </PIN>
-   </NODE>
    <NODE systemname="Refraction (SuperPhysical Material)" filename="%VVVV%\packs\SuperPhysical\nodes\vl\VVVV.Value.SuperPhysical.vl" nodename="Refraction (SuperPhysical Material)" componentmode="Hidden" id="263">
    <BOUNDS type="Node" left="16440" top="7065" width="100" height="100">
    </BOUNDS>
@@ -701,9 +681,9 @@
    <LINK srcnodeid="39" srcpinname="Texture Out" dstnodeid="409" dstpinname="Texture In">
    </LINK>
    <NODE nodename="IOBox (Color)" componentmode="InABox" id="415" systemname="IOBox (Color)">
-   <BOUNDS type="Box" left="4110" top="6180" width="2250" height="480">
+   <BOUNDS type="Box" left="3930" top="6105" width="2250" height="480">
    </BOUNDS>
-   <BOUNDS type="Node" left="4110" top="6180" width="0" height="0">
+   <BOUNDS type="Node" left="3930" top="6105" width="0" height="0">
    </BOUNDS>
    <PIN pinname="Color Input" slicecount="1" visible="1" values="|1.00000,1.00000,1.00000,1.00000|">
    </PIN>
@@ -751,7 +731,7 @@
    </PIN>
    <PIN pinname="Output" visible="1">
    </PIN>
-   <PIN pinname="Enabled" slicecount="1" values="1">
+   <PIN pinname="Enabled" slicecount="1" values="1" visible="1">
    </PIN>
    <PIN pinname="tTex" visible="1" slicecount="1" values="||">
    </PIN>
@@ -783,7 +763,7 @@
    <NODE systemname="Material (SuperPhysical Material)" filename="%VVVV%\packs\SuperPhysical\nodes\vl\VVVV.Value.SuperPhysical.vl" nodename="Material (SuperPhysical Material)" componentmode="Hidden" id="432">
    <BOUNDS type="Node" left="375" top="8235" width="14325" height="270">
    </BOUNDS>
-   <PIN pinname="Color" visible="1">
+   <PIN pinname="Color" visible="1" slicecount="1" values="|0.00000,1.00000,0.00000,1.00000|">
    </PIN>
    <PIN pinname="Emissive" visible="1" slicecount="2" values="|0.00000,0.00000,0.00000,1.00000|,|0.77498,0.24374,1.00000,1.00000|">
    </PIN>
@@ -833,7 +813,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="12195" top="5145" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="0,0.53">
+   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="0.1,0">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -845,10 +825,10 @@
    </PIN>
    <PIN pinname="Default" slicecount="1" values="|0, 0|">
    </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="SSSAmount">
+   </PIN>
    </NODE>
    <LINK srcnodeid="435" srcpinname="Y Output Value" dstnodeid="253" dstpinname="SSSAmount">
-   </LINK>
-   <LINK srcnodeid="415" srcpinname="Color Output" dstnodeid="432" dstpinname="Color">
    </LINK>
    <NODE systemname="Cons (Color)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="Cons (Color)" componentmode="Hidden" id="437">
    <BOUNDS type="Node" left="5775" top="5250" width="100" height="100">
@@ -913,7 +893,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="17835" top="4485" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="0,0">
+   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="0,1">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -925,7 +905,7 @@
    </PIN>
    <PIN pinname="Descriptive Name" slicecount="1" values="||">
    </PIN>
-   <PIN pinname="X Input Value" slicecount="2" values="0,0">
+   <PIN pinname="X Input Value" slicecount="2" values="0,1">
    </PIN>
    <PIN pinname="Y Output Value" visible="1">
    </PIN>
@@ -965,7 +945,7 @@
    <LINK srcnodeid="444" srcpinname="Y Output Value" dstnodeid="432" dstpinname="Metallic">
    </LINK>
    <NODE systemname="GetSlice (Node)" nodename="GetSlice (Node)" componentmode="Hidden" id="445">
-   <BOUNDS type="Node" left="2220" top="4980" width="100" height="100">
+   <BOUNDS type="Node" left="1545" top="4965" width="100" height="100">
    </BOUNDS>
    <PIN pinname="Input Node" visible="1">
    </PIN>
@@ -977,9 +957,9 @@
    <LINK srcnodeid="430" srcpinname="Output" dstnodeid="445" dstpinname="Input Node">
    </LINK>
    <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="446">
-   <BOUNDS type="Box" left="2865" top="4200" width="795" height="480">
+   <BOUNDS type="Box" left="2175" top="3930" width="825" height="825">
    </BOUNDS>
-   <BOUNDS type="Node" left="2865" top="4200" width="0" height="0">
+   <BOUNDS type="Node" left="2175" top="3930" width="0" height="0">
    </BOUNDS>
    <PIN pinname="Y Input Value" slicecount="2" visible="1" values="1,0">
    </PIN>
@@ -994,6 +974,8 @@
    <PIN pinname="Vector Size" slicecount="1" values="2">
    </PIN>
    <PIN pinname="Default" slicecount="1" values="|0, 0|">
+   </PIN>
+   <PIN pinname="SliceCount Mode" slicecount="1" values="ColsRowsPages">
    </PIN>
    </NODE>
    <LINK srcnodeid="446" srcpinname="Y Output Value" dstnodeid="445" dstpinname="Index">
@@ -1065,15 +1047,75 @@
    </BOUNDS>
    <BOUNDS type="Node" left="5670" top="7110" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Color Input" slicecount="1" values="|0.00000,0.00000,0.00000,1.00000|">
+   <PIN pinname="Color Input" slicecount="1" values="|0.00000,0.00000,0.00000,1.00000|" visible="1">
+   </PIN>
+   <PIN pinname="Descriptive Name" slicecount="1" values="Emissive">
    </PIN>
    </NODE>
    <LINK srcnodeid="465" srcpinname="Color Output" dstnodeid="432" dstpinname="Emissive">
    </LINK>
-   <LINK srcnodeid="439" srcpinname="Output" dstnodeid="415" dstpinname="Color Input">
-   </LINK>
    <LINK srcnodeid="459" srcpinname="Y Output Value" dstnodeid="460" dstpinname="ScaleY">
    </LINK>
    <LINK srcnodeid="459" srcpinname="Y Output Value" dstnodeid="460" dstpinname="ScaleX">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="466">
+   <BOUNDS type="Box" left="14775" top="1755" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="14775" top="1755" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="3" visible="1" values="1,1,1">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Toggle">
+   </PIN>
+   <PIN pinname="SliceCount Mode" slicecount="1" values="ColsRowsPages">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="3" values="1,1,1">
+   </PIN>
+   <PIN pinname="Y Output Value" visible="1">
+   </PIN>
+   </NODE>
+   <NODE nodename="IOBox (Color)" componentmode="InABox" id="467">
+   <BOUNDS type="Box" left="5310" top="9735" width="2280" height="1755">
+   </BOUNDS>
+   <BOUNDS type="Node" left="5310" top="9735" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Color Input" slicecount="3" visible="1" values="|1.00000,1.00000,1.00000,1.00000|,|1.00000,1.00000,1.00000,1.00000|,|0.00000,0.58877,1.00000,1.00000|">
+   </PIN>
+   <PIN pinname="SliceCount Mode" slicecount="1" values="ColsRowsPages">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Color Output" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="415" srcpinname="Color Output" dstnodeid="432" dstpinname="Color">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="468">
+   <BOUNDS type="Box" left="15495" top="5400" width="480" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="15495" top="5400" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Value Type" slicecount="1" values="Boolean">
+   </PIN>
+   <PIN pinname="Behavior" slicecount="1" values="Bang">
+   </PIN>
+   <PIN pinname="X Input Value" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="468" srcpinname="Y Output Value" dstnodeid="74" dstpinname="Apply">
    </LINK>
    </PATCH>
