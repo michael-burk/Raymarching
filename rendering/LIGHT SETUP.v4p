@@ -23,7 +23,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="645" top="1095" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Color Input" slicecount="1" visible="1" values="|1.00000,0.00000,0.84942,1.00000|">
+   <PIN pinname="Color Input" slicecount="1" visible="1" values="|0.60055,0.60055,0.60055,1.00000|">
    </PIN>
    <PIN pinname="Descriptive Name" slicecount="1" values="|Global Reflection Color|">
    </PIN>
@@ -125,7 +125,7 @@
    </BOUNDS>
    <PIN pinname="Color" visible="1">
    </PIN>
-   <PIN pinname="Scalar" slicecount="1" values="1">
+   <PIN pinname="Scalar" slicecount="1" values="0.5">
    </PIN>
    <PIN pinname="Output" visible="1">
    </PIN>
@@ -201,7 +201,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="6720" top="750" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="10">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -318,6 +318,10 @@
    <PIN pinname="FOV" slicecount="1" values="0.2">
    </PIN>
    <PIN pinname="Range" slicecount="1" values="8">
+   </PIN>
+   <PIN pinname="Enabled" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="LightIntensity" slicecount="1" values="2">
    </PIN>
    </NODE>
    <LINK srcnodeid="233" srcpinname="SpotLights" dstnodeid="231" dstpinname="SpotLightSettings">

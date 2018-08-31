@@ -44,6 +44,7 @@ float3 mouse;
 	static const float3 myBox = float3(.25, 2, 2);
 	//-------------------------------
 	
+float time;
 
 float hash1( float n )
 {
@@ -91,50 +92,52 @@ float sphereD (float3 p, float d){
 	// Simple Sphere
 	return (length(p) - d )*.1;
 }
+	// Spherical UVs
 
-float time;
+	#define TWOPI 6.28318531
+	#define PI 3.14159265
+   float2 SphericalUV(float3 pos, float3 norm)
+	{ 
+		
+	float2 result;
+	float r;
+	r = norm.x * norm.x + norm.y * norm.y + norm.z * norm.z;
+
+	if (r > 0)
+	{
+		r = sqrt(r);
+		float p, y;
+		p = asin(norm.y/r) / TWOPI;
+		y = 0;
+		if (norm.z != 0) y = atan2(-norm.x, -norm.z);
+		else if (norm.x > 0) y = -PI / 2;
+       	else y = PI / 2;
+		y /=  TWOPI;
+		result = float2(-y,-(p+.25)*2);		
+	}
+	else result = 0;
+	return result;
+		
+	}
+   float2 CubicUV(float3 pos, float3 norm)
+	{
+		norm = float3(abs(norm.x), abs(norm.y), abs(norm.z));
+		if (norm.x > norm.y && norm.x > norm.z)
+		return float2(pos.z, -pos.y)+.5;
+		else if (norm.y > norm.x && norm.y > norm.z)
+		return float2(pos.x, -pos.z)+.5;
+		else return float2(pos.x, -pos.y)+.5;
+	}
+
+
 
 // Distance field function
 float sceneSDF (float3 p)
 {
 	float3 p1 = p;
-
-//	float x = 1;
-//	//Domain Distortion
-//	  p1.xyz += 1.000 * x * sin(  2.0  * p1.yzx +time		  * 1 );
-//    p1.xyz += 0.500 * x * sin(  4.0  * p1.yzx -time * 15.1  * 1 );
-//    p1.xyz += 0.250 * x * sin(  8.0  * p1.yzx +time * 10.2  * 1 );
-//    p1.xyz += 0.050 * x * sin( 16.0  * p1.yzx -time * 14.3  * 1 );
-	
-//	return max( min( max(-sphere(p1), box(p, myBox) ), box(p, myBox) ), -sphere1(p+mouse));
-	
-//	return( max(box(p, myBox), -sphere1(p+mouse)) );
 	
 	return( max(sphereD(p,1), -box(p+mouse,myBox) ));
 
-//	return sphere(p1);
-
-	// Intersect Chamfer
-//	float a = sphere(p+mouse);
-//	float b = sphere(p1);
-//	float r = .1;
-//
-//	return max(max(a, b), (a + r + b)*sqrt(0.5));
-	
-	// Difference Chamfer
-//	float a = sphere(p+mouse);
-//	float b = sphere(p1);
-//	float r = .1;
-//	return max(max(a, -b), (a + r - b)*sqrt(0.5));
-	
-	// Combine
-//	return smin(sphere(p+mouse),sphere(p1),.2);
-
-	//Pipe
-//	float a = box(p,float3(1.0,1.2,1.0));
-//	float b = box(p,float3(1,1,1));
-//	float r = .1;
-//	return length(float2(a, b)) - r;
 }
 
 
@@ -178,13 +181,12 @@ float raymarch (in float3 eye, in float3 dir)
 {
 	float t = 0.0;
 	float dist = .1;
-	for (uint i = 0 ; i < 512 ; i++)
+	for (uint i = 0 ; i < 1024 ; i++)
 	{	
 		if(dist < EPSILON || dist > MAX_DIST) break;
 		dist = sceneSDF (eye + dir*t);
 		t += dist * 0.5;
 	}
-//	if( t>MAX_DIST ) t=-1.0;
 	return t;
 
 }
@@ -197,7 +199,7 @@ GBuffer PS(VS_OUT input)
 	
 	uint mID = 0;
 	
-	float4 col = 0;
+//	float4 col = 0;
 	float3 normal = 0;
 
 	// Ray Origin
@@ -215,29 +217,6 @@ GBuffer PS(VS_OUT input)
 	if(dist>MAX_DIST) discard;
  	if(dist<MAX_DIST) normal = calcNormal(p);
 	
-	
-//	float fog = max(1 - 1/(1+dist*dist*.15),.0);
-//	float occ = 1;
-//	occ = calcAO( p, normal);
-//	occ = occ*occ;
-
-//	float not_grid = box(p);
-//	if(not_grid > .01)
-//	{
-//		col.rgb *= saturate(abs(frac(not_grid*10)*2-1)*10);
-//	}
-		
-	// FRESNEL CALCS 
-//	float KrMin = 0;
-//	float Kr =1;
-//	float FresExp = 2;
-//	float3 reflVect = reflect(dir,normal);
-//	float vdn = -saturate(dot(reflVect,normal));
-//	float fresRefl = KrMin + (Kr-KrMin) * pow(1-abs(vdn),FresExp);	
-//	
-//	col = lerp((float4(.5,.5,.5,0)+fresRefl*float4(.5,.5,1,0))*occ,float4(.8,.8,1,0),fog);
-//
-//    return saturate(col);
 
 	float3 p1 = p;	
 	
@@ -248,26 +227,21 @@ GBuffer PS(VS_OUT input)
     p1.xyz += 0.250 * x * sin(  8.0  * p1.yzx +time * 10.2  * 1 );
     p1.xyz += 0.050 * x * sin( 16.0  * p1.yzx -time * 14.3  * 1 );
 
-	if( max(-sphere(p1), sphereD(p,1)) < .001 ){
+	if( -sphere(p1) < .001 ){
 		mID = 0;
-		col = float4(1,0,0,0);
+//		col = float4(1,0,0,0);
 	} 
 	else if( sphereD(p,1) < .001 ){
 		mID = 1;
-		col = float4(0,0,1,0);
+//		col = float4(0,0,1,0);
 	} 
-	
-//	else col = float4(0,0,1,0);
 	float4 PosWVP = mul(float4(p.xyz,1),tVP);
 	
 	output.pos = float4(p.xyz,1);
 	output.normal = float4(normal, (float) mID * .001 );
-	output.uv = 1;
-
+	output.uv = CubicUV(p.xyz, normal);
 	output.depth = PosWVP.z/PosWVP.w;
 	return output;
-
-//	return dist*.1;
 }
 
 
