@@ -1,6 +1,6 @@
 <!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv50alpha36.1.dtd" >
    <PATCH nodename="C:\Users\Michael\Desktop\PROJECTS\Raymarching\Raymarching.v4p" systemname="Raymarching" filename="C:\Projects\RAYMARCHING\Raymarching.v4p" scrollx="0" scrolly="0" locked="0">
-   <BOUNDS type="Window" left="1110" top="1260" width="14325" height="13695">
+   <BOUNDS type="Window" left="1305" top="1110" width="14325" height="13695">
    </BOUNDS>
    <PACK Name="addonpack" Version="36.0.0">
    </PACK>
@@ -387,21 +387,21 @@
    </PIN>
    </NODE>
    <LINK srcnodeid="134" srcpinname="View" dstnodeid="125" dstpinname="View" linkstyle="Bezier">
-   <LINKPOINT x="11655" y="7740">
+   <LINKPOINT x="11655" y="7778">
    </LINKPOINT>
-   <LINKPOINT x="2655" y="7830">
+   <LINKPOINT x="2655" y="7778">
    </LINKPOINT>
    </LINK>
    <LINK srcnodeid="134" srcpinname="Projection" dstnodeid="125" dstpinname="Projection" linkstyle="Bezier">
-   <LINKPOINT x="11820" y="7740">
+   <LINKPOINT x="11820" y="7778">
    </LINKPOINT>
-   <LINKPOINT x="2820" y="7830">
+   <LINKPOINT x="2820" y="7778">
    </LINKPOINT>
    </LINK>
    <LINK srcnodeid="134" srcpinname="Camera State" dstnodeid="125" dstpinname="Camera State" linkstyle="Bezier">
-   <LINKPOINT x="11475" y="7740">
+   <LINKPOINT x="11475" y="7785">
    </LINKPOINT>
-   <LINKPOINT x="2985" y="7830">
+   <LINKPOINT x="2985" y="7785">
    </LINKPOINT>
    </LINK>
    <LINK srcnodeid="134" srcpinname="View" dstnodeid="1" dstpinname="View" linkstyle="Bezier">
@@ -583,9 +583,9 @@
    </LINKPOINT>
    </LINK>
    <LINK srcnodeid="134" srcpinname="Camera State" dstnodeid="121" dstpinname="Camera State" linkstyle="Bezier">
-   <LINKPOINT x="11485" y="5415">
+   <LINKPOINT x="11490" y="5408">
    </LINKPOINT>
-   <LINKPOINT x="5270" y="5400">
+   <LINKPOINT x="5265" y="5408">
    </LINKPOINT>
    </LINK>
    <LINK srcnodeid="1" srcpinname="Buffers" dstnodeid="121" dstpinname="GBuffer (Pos, Normal  TexCD)" linkstyle="Bezier">
@@ -713,13 +713,13 @@
    </PIN>
    <PIN pinname="NB_STEPS" slicecount="1" values="16">
    </PIN>
-   <PIN pinname="offsetZ" slicecount="1" values="0" visible="1">
+   <PIN pinname="offsetZ" slicecount="1" visible="1" values="0">
    </PIN>
    <PIN pinname="FadeZ" slicecount="1" values="0.85">
    </PIN>
    <PIN pinname="Enabled" visible="1">
    </PIN>
-   <PIN pinname="brightness" slicecount="1" values="0.2">
+   <PIN pinname="brightness" slicecount="1" values="0.35">
    </PIN>
    </NODE>
    <LINK srcnodeid="129" srcpinname="Y Output Value" dstnodeid="165" dstpinname="HighRes">
@@ -729,9 +729,9 @@
    <LINK srcnodeid="1" srcpinname="Depth Buffer" dstnodeid="165" dstpinname="DepthHighRes">
    </LINK>
    <LINK srcnodeid="134" srcpinname="Camera State" dstnodeid="165" dstpinname="Camera State" linkstyle="Bezier">
-   <LINKPOINT x="10520" y="7013">
+   <LINKPOINT x="11475" y="6803">
    </LINKPOINT>
-   <LINKPOINT x="5050" y="6623">
+   <LINKPOINT x="4110" y="6803">
    </LINKPOINT>
    </LINK>
    <NODE systemname="BlendBasic (DX11.TextureFX)" filename="%VVVV%\packs\dx11\nodes\texture11\Mixer\BlendBasic.tfx" nodename="BlendBasic (DX11.TextureFX)" componentmode="Hidden" id="166">
@@ -767,7 +767,7 @@
    </PIN>
    <PIN pinname="Depth Buffer" visible="1">
    </PIN>
-   <PIN pinname="dist" slicecount="1" values="3.25" visible="1">
+   <PIN pinname="dist" slicecount="1" visible="1" values="3.25">
    </PIN>
    <PIN pinname="_LensCoeff" slicecount="1" values="0.02">
    </PIN>
@@ -782,7 +782,11 @@
    </LINK>
    <LINK srcnodeid="168" srcpinname="Texture Out" dstnodeid="128" dstpinname="Texture In">
    </LINK>
-   <LINK srcnodeid="134" srcpinname="Projection" dstnodeid="168" dstpinname="Projection">
+   <LINK srcnodeid="134" srcpinname="Projection" dstnodeid="168" dstpinname="Projection" linkstyle="Bezier">
+   <LINKPOINT x="11835" y="7335">
+   </LINKPOINT>
+   <LINKPOINT x="2505" y="7335">
+   </LINKPOINT>
    </LINK>
    <LINK srcnodeid="1" srcpinname="Depth Buffer" dstnodeid="168" dstpinname="Depth Buffer">
    </LINK>
@@ -796,7 +800,11 @@
    <PIN pinname="Length" visible="1">
    </PIN>
    </NODE>
-   <LINK srcnodeid="134" srcpinname="PositionXYZ" dstnodeid="170" dstpinname="XYZ">
+   <LINK srcnodeid="134" srcpinname="PositionXYZ" dstnodeid="170" dstpinname="XYZ" linkstyle="Bezier">
+   <LINKPOINT x="12360" y="7305">
+   </LINKPOINT>
+   <LINKPOINT x="6855" y="7305">
+   </LINKPOINT>
    </LINK>
    <NODE systemname="Add (Value)" nodename="Add (Value)" componentmode="Hidden" id="171">
    <BOUNDS type="Node" left="6825" top="12360" width="100" height="100">

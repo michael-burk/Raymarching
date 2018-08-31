@@ -46,7 +46,7 @@ float3 mouse;
 
 	// Shapes
 	//-------------------------------
-	static const float3 myBox = float3(1, 1, 1);
+	static const float3 myBox = float3(.25, 2, 2);
 	//-------------------------------
 	
 float time;
@@ -174,8 +174,8 @@ float fOpIntersectionChamfer(float a, float b, float r)
 float sceneSDF (float3 p)
 {
 	float a = box(opTwist(p*2),float3(1,1,1))*.1;
-	float b = -box(p+mouse,myBox);
-//	float b = sphereD(p+mouse,.5);
+//	float b = -box(p+mouse,myBox);
+	float b = sphereD(p+mouse,.5);
 	
 //	return fOpIntersectionStairs(a,b,.03,5);
 	return fOpIntersectionChamfer(a,b,.005);
@@ -227,8 +227,6 @@ float raymarch (in float3 eye, in float3 dir)
 	return t;
 
 }
-
-
 
 
 GBuffer PS(VS_OUT input)
