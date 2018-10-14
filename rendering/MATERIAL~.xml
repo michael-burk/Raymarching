@@ -1,25 +1,13 @@
 <!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv50alpha36.1.dtd" >
-   <PATCH nodename="C:\Users\Michael\Desktop\PROJECTS\Raymarching\rendering\MATERIAL.v4p" systemname="MATERIAL" filename="C:\Users\Michael\Desktop\PROJECTS\Raymarching\rendering\MATERIAL.v4p" scrollx="0" scrolly="0">
+   <PATCH nodename="C:\Users\Michael\Desktop\PROJECTS\Raymarching\rendering\MATERIAL.v4p" systemname="MATERIAL" filename="C:\Users\Michael\Desktop\PROJECTS\Raymarching\rendering\MATERIAL.v4p" scrollx="0" scrolly="30">
    <BOUNDS type="Window" left="2505" top="1620" width="14895" height="13320">
    </BOUNDS>
    <PACK Name="addonpack" Version="36.0.0">
    </PACK>
-   <NODE systemname="FileTexture (DX11 2d.Pooled)" filename="%VVVV%\packs\dx11\nodes\plugins\base\VVVV.DX11.Nodes.dll" nodename="FileTexture (DX11 2d.Pooled)" componentmode="Hidden" id="42">
-   <BOUNDS type="Node" left="1500" top="1725" width="100" height="100">
-   </BOUNDS>
-   <PIN pinname="Filename" slicecount="3" values="..\..\..\..\..\..\vvvv\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\albedo\Copper-scuffed_basecolor-boosted.png,..\..\..\..\..\..\vvvv\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\albedo\cratered-rock-albedo.png,..\..\..\assets\materials\albedo\mahogfloor_basecolor.png">
-   </PIN>
-   <PIN pinname="Texture Out" visible="1">
-   </PIN>
-   <BOUNDS type="Box" left="1500" top="1725">
-   </BOUNDS>
-   <PIN pinname="Reload" slicecount="1" values="0">
-   </PIN>
-   </NODE>
    <NODE systemname="FileTexture (DX11 2d.Pooled)" filename="%VVVV%\packs\dx11\nodes\plugins\base\VVVV.DX11.Nodes.dll" nodename="FileTexture (DX11 2d.Pooled)" componentmode="Hidden" id="39">
    <BOUNDS type="Node" left="3660" top="1725" width="100" height="100">
    </BOUNDS>
-   <PIN pinname="Filename" slicecount="3" values="..\..\..\..\..\..\vvvv\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\normal\Copper-scuffed_normal.png,..\..\..\..\..\..\vvvv\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\normal\cratered-rock-normal.png,..\..\..\assets\materials\normal\mahogfloor_normal.png">
+   <PIN pinname="Filename" slicecount="2" values="..\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\normal\Copper-scuffed_normal.png,..\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\normal\streaked-marble-normal.png">
    </PIN>
    <PIN pinname="Texture Out" visible="1">
    </PIN>
@@ -29,7 +17,7 @@
    <NODE systemname="FileTexture (DX11 2d.Pooled)" filename="%VVVV%\packs\dx11\nodes\plugins\base\VVVV.DX11.Nodes.dll" nodename="FileTexture (DX11 2d.Pooled)" componentmode="Hidden" id="36">
    <BOUNDS type="Node" left="4710" top="1725" width="100" height="100">
    </BOUNDS>
-   <PIN pinname="Filename" slicecount="3" values="..\..\..\..\..\..\vvvv\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\heightmap\Copper-scuffed_height.png,..\..\..\..\..\..\vvvv\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\heightmap\cratered-rock-height.png,..\..\..\assets\materials\heightmap\mahogfloor_Height.png">
+   <PIN pinname="Filename" slicecount="1" values="||">
    </PIN>
    <PIN pinname="Texture Out" visible="1">
    </PIN>
@@ -39,7 +27,7 @@
    <NODE systemname="FileTexture (DX11 2d.Pooled)" filename="%VVVV%\packs\dx11\nodes\plugins\base\VVVV.DX11.Nodes.dll" nodename="FileTexture (DX11 2d.Pooled)" componentmode="Hidden" id="33">
    <BOUNDS type="Node" left="5790" top="1725" width="100" height="100">
    </BOUNDS>
-   <PIN pinname="Filename" slicecount="2" values="..\..\..\..\..\..\vvvv\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\roughness\Copper-scuffed_roughness.png,..\..\..\..\..\..\vvvv\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\roughness\cratered-rock-roughness.png">
+   <PIN pinname="Filename" slicecount="2" values="..\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\roughness\Copper-scuffed_roughness.png,..\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\roughness\streaked-marble-roughness1.png">
    </PIN>
    <PIN pinname="Texture Out" visible="1">
    </PIN>
@@ -49,7 +37,7 @@
    <NODE systemname="FileTexture (DX11 2d.Pooled)" filename="%VVVV%\packs\dx11\nodes\plugins\base\VVVV.DX11.Nodes.dll" nodename="FileTexture (DX11 2d.Pooled)" componentmode="Hidden" id="30">
    <BOUNDS type="Node" left="6840" top="1725" width="100" height="100">
    </BOUNDS>
-   <PIN pinname="Filename" slicecount="2" values="..\..\..\..\..\..\vvvv\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\metallic\Copper-scuffed_metallic.png,..\..\..\..\..\..\vvvv\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\metallic\cratered-rock-metalness.png">
+   <PIN pinname="Filename" slicecount="2" values="..\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\metallic\Copper-scuffed_metallic.png,..\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\metallic\streaked-marble-metalness.png">
    </PIN>
    <PIN pinname="Texture Out" visible="1">
    </PIN>
@@ -57,13 +45,13 @@
    </BOUNDS>
    </NODE>
    <NODE systemname="FileTexture (DX11 2d.Pooled)" filename="%VVVV%\packs\dx11\nodes\plugins\base\VVVV.DX11.Nodes.dll" nodename="FileTexture (DX11 2d.Pooled)" componentmode="Hidden" id="27">
-   <BOUNDS type="Node" left="7905" top="1725" width="100" height="100">
+   <BOUNDS type="Node" left="7875" top="1680" width="100" height="100">
    </BOUNDS>
    <PIN pinname="Filename" slicecount="3" values="..\..\..\..\..\..\vvvv\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\ao\Copper-scuffed_ao.png,..\..\..\..\..\..\vvvv\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\ao\cratered-rock-ao.png,..\..\..\assets\materials\ao\mahogfloor_AO.png">
    </PIN>
    <PIN pinname="Texture Out" visible="1">
    </PIN>
-   <BOUNDS type="Box" left="7905" top="1725">
+   <BOUNDS type="Box" left="7875" top="1680">
    </BOUNDS>
    </NODE>
    <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="53" systemname="IOBox (Value Advanced)">
@@ -337,7 +325,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="9000" top="2325" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="0.02">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -657,9 +645,9 @@
    <PACK Name="vvvv-Message" Version="2.9.10">
    </PACK>
    <NODE systemname="ToPointer (DX11.Texture 2d)" filename="%VVVV%\packs\SuperPhysical\nodes\plugins\PointerNodes.dll" nodename="ToPointer (DX11.Texture 2d)" componentmode="Hidden" id="404">
-   <BOUNDS type="Node" left="7905" top="2325" width="100" height="100">
+   <BOUNDS type="Node" left="7875" top="2280" width="100" height="100">
    </BOUNDS>
-   <BOUNDS type="Box" left="7905" top="2325" width="3000" height="3000">
+   <BOUNDS type="Box" left="7875" top="2280" width="3000" height="3000">
    </BOUNDS>
    <PIN pinname="Apply" slicecount="1" visible="1" values="1">
    </PIN>
@@ -711,7 +699,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="10080" top="2355" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="1">
+   <PIN pinname="Y Input Value" slicecount="1" visible="1" values="-1">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -731,7 +719,7 @@
    </PIN>
    <PIN pinname="Output" visible="1">
    </PIN>
-   <PIN pinname="Enabled" slicecount="1" values="1" visible="1">
+   <PIN pinname="Enabled" slicecount="1" visible="1" values="1">
    </PIN>
    <PIN pinname="tTex" visible="1" slicecount="1" values="||">
    </PIN>
@@ -789,7 +777,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="2190" top="6690" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="0.01,1">
+   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="1,1">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -830,64 +818,6 @@
    </NODE>
    <LINK srcnodeid="435" srcpinname="Y Output Value" dstnodeid="253" dstpinname="SSSAmount">
    </LINK>
-   <NODE systemname="Cons (Color)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="Cons (Color)" componentmode="Hidden" id="437">
-   <BOUNDS type="Node" left="5775" top="5250" width="100" height="100">
-   </BOUNDS>
-   <BOUNDS type="Box" left="5775" top="5250" width="3000" height="3000">
-   </BOUNDS>
-   <PIN pinname="Input 1" visible="1" slicecount="1" values="|0.00000,1.00000,0.00000,1.00000|">
-   </PIN>
-   <PIN pinname="Input 2" visible="1">
-   </PIN>
-   <PIN pinname="Output" visible="1">
-   </PIN>
-   </NODE>
-   <NODE nodename="IOBox (Color)" componentmode="InABox" id="438">
-   <BOUNDS type="Box" left="5145" top="3870" width="2250" height="480">
-   </BOUNDS>
-   <BOUNDS type="Node" left="5145" top="3870" width="0" height="0">
-   </BOUNDS>
-   <PIN pinname="Color Input" slicecount="1" visible="1" values="|0.96177,1.00000,0.24374,1.00000|">
-   </PIN>
-   <PIN pinname="Color Output" visible="1">
-   </PIN>
-   </NODE>
-   <NODE systemname="Cons (Color)" filename="%VVVV%\lib\nodes\plugins\VVVV.Nodes.dll" nodename="Cons (Color)" componentmode="Hidden" id="439">
-   <BOUNDS type="Node" left="4245" top="5115" width="100" height="100">
-   </BOUNDS>
-   <BOUNDS type="Box" left="4245" top="5115" width="3000" height="3000">
-   </BOUNDS>
-   <PIN pinname="Input 1" visible="1" slicecount="1" values="|0.00000,1.00000,0.00000,1.00000|">
-   </PIN>
-   <PIN pinname="Input 2" visible="1">
-   </PIN>
-   <PIN pinname="Output" visible="1">
-   </PIN>
-   </NODE>
-   <LINK srcnodeid="438" srcpinname="Color Output" dstnodeid="437" dstpinname="Input 2">
-   </LINK>
-   <LINK srcnodeid="438" srcpinname="Color Output" dstnodeid="439" dstpinname="Input 2">
-   </LINK>
-   <NODE nodename="IOBox (Color)" componentmode="InABox" id="440">
-   <BOUNDS type="Box" left="4290" top="4455" width="2250" height="480">
-   </BOUNDS>
-   <BOUNDS type="Node" left="4290" top="4455" width="0" height="0">
-   </BOUNDS>
-   <PIN pinname="Color Input" slicecount="1" visible="1" values="|1.00000,1.00000,1.00000,1.00000|">
-   </PIN>
-   </NODE>
-   <LINK srcnodeid="440" srcpinname="Color Output" dstnodeid="439" dstpinname="Input 1">
-   </LINK>
-   <NODE nodename="IOBox (Color)" componentmode="InABox" id="441">
-   <BOUNDS type="Box" left="6825" top="4380" width="2250" height="480">
-   </BOUNDS>
-   <BOUNDS type="Node" left="6825" top="4380" width="0" height="0">
-   </BOUNDS>
-   <PIN pinname="Color Input" slicecount="1" visible="1" values="|0.00000,0.00000,0.00000,1.00000|">
-   </PIN>
-   </NODE>
-   <LINK srcnodeid="441" srcpinname="Color Output" dstnodeid="437" dstpinname="Input 1">
-   </LINK>
    <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="443" systemname="IOBox (Value Advanced)">
    <BOUNDS type="Box" left="17835" top="4485" width="480" height="480">
    </BOUNDS>
@@ -923,7 +853,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="465" top="7005" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="0,0.75">
+   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="1,1">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -1024,8 +954,6 @@
    </LINK>
    <LINK srcnodeid="459" srcpinname="Y Output Value" dstnodeid="460" dstpinname="ScaleZ">
    </LINK>
-   <LINK srcnodeid="42" srcpinname="Texture Out" dstnodeid="450" dstpinname="Texture In">
-   </LINK>
    <LINK srcnodeid="272" srcpinname="Pointer" dstnodeid="176" dstpinname="Y Input Value">
    </LINK>
    <LINK srcnodeid="167" srcpinname="Pointer" dstnodeid="175" dstpinname="Y Input Value">
@@ -1047,7 +975,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="5670" top="7110" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Color Input" slicecount="1" values="|0.00000,0.00000,0.00000,1.00000|" visible="1">
+   <PIN pinname="Color Input" slicecount="1" visible="1" values="|0.00000,0.00000,0.00000,1.00000|">
    </PIN>
    <PIN pinname="Descriptive Name" slicecount="1" values="Emissive">
    </PIN>
@@ -1082,20 +1010,6 @@
    <PIN pinname="Y Output Value" visible="1">
    </PIN>
    </NODE>
-   <NODE nodename="IOBox (Color)" componentmode="InABox" id="467">
-   <BOUNDS type="Box" left="5310" top="9735" width="2280" height="1755">
-   </BOUNDS>
-   <BOUNDS type="Node" left="5310" top="9735" width="0" height="0">
-   </BOUNDS>
-   <PIN pinname="Color Input" slicecount="3" visible="1" values="|1.00000,1.00000,1.00000,1.00000|,|1.00000,1.00000,1.00000,1.00000|,|0.00000,0.58877,1.00000,1.00000|">
-   </PIN>
-   <PIN pinname="SliceCount Mode" slicecount="1" values="ColsRowsPages">
-   </PIN>
-   <PIN pinname="Rows" slicecount="1" values="3">
-   </PIN>
-   <PIN pinname="Color Output" visible="1">
-   </PIN>
-   </NODE>
    <LINK srcnodeid="415" srcpinname="Color Output" dstnodeid="432" dstpinname="Color">
    </LINK>
    <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="468">
@@ -1117,5 +1031,19 @@
    </PIN>
    </NODE>
    <LINK srcnodeid="468" srcpinname="Y Output Value" dstnodeid="74" dstpinname="Apply">
+   </LINK>
+   <NODE id="42" systemname="FileTexture (DX11 2d.Pooled)" filename="%VVVV%\packs\dx11\nodes\plugins\base\VVVV.DX11.Nodes.dll" nodename="FileTexture (DX11 2d.Pooled)" componentmode="Hidden">
+   <BOUNDS type="Node" left="1635" top="1260" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="1635" top="1260">
+   </BOUNDS>
+   <PIN pinname="Filename" slicecount="2" values="..\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\albedo\Copper-scuffed_basecolor-boosted.png,..\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\albedo\streaked-marble-albedo2.png">
+   </PIN>
+   <PIN pinname="Texture Out" visible="1">
+   </PIN>
+   <PIN pinname="Reload" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="42" srcpinname="Texture Out" dstnodeid="450" dstpinname="Texture In">
    </LINK>
    </PATCH>

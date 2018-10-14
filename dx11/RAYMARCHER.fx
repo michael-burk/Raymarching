@@ -34,6 +34,7 @@ struct GBuffer {
 	float4 pos 	  : SV_Target0;
 	float4 normal : SV_Target1;
 	float2 uv  	  : SV_Target2;
+//	float  ao 	  : SV_Target3;
 	float  depth  : SV_DEPTH;
 };
 
@@ -171,16 +172,35 @@ float fOpIntersectionChamfer(float a, float b, float r)
 	return max(max(a, b), (a + r + b)*sqrt(0.5));
 }
 
+
+SamplerState linearSampler <string uiname="Sampler State";>
+{
+    Filter = MIN_MAG_MIP_LINEAR;
+    AddressU = CLAMP;
+    AddressV = CLAMP;
+};
+
+Texture3D texVOL;
+float2 ctrl;
+float volume(float3 p){
+		float result = texVOL.SampleLevel(linearSampler,float3((p.xyz*float3(1,1,1) + .5)),0).x;
+		return result;
+}
+
 // Distance field function
 float sceneSDF (float3 p)
 {
-	float a = box(opTwist(p*2),float3(1,1,1))*.1;
+//	float a = box(opTwist(p*2),float3(1,1,1))*.1;
 //	float b = -box(p+mouse,myBox);
-	float b = sphereD(p+mouse,.5);
+//	float b = sphereD(p+mouse,.5);
+	
+	float a = volume(p);
+	float b = volume(p + mouse);
 	
 //	return fOpIntersectionStairs(a,b,.03,5);
-	return smin( fOpIntersectionChamfer(a,b,.005), box(p+float3(0,.5,0), float3(2,.1,2)),.3 );
-
+//	return smin( fOpIntersectionChamfer(a,b,.005), box(p+float3(0,.5,0), float3(2,.1,2)),.3 );
+	return smin( smin(a,b,.075), box(p+float3(0,.5,0), float3(1,.1,1)), .1);
+//	return smin(a,b,.075);
 //	return max( box(opTwist(p*2),float3(1,1,1))*.1,-box(p+mouse,myBox));
 
 
@@ -201,9 +221,10 @@ float calcAO( in float3 pos, in float3 nor)
 	
     return clamp( ao*ao, 0.0, 1.0 );
 }
+
 float3 calcNormal( in float3 pos )
 {
-	float3 eps = float3( 0.001, 0.0, 0.0 );
+	float3 eps = float3( 0.01, 0.0, 0.0 );
 	float3 nor = float3(
 	sceneSDF(pos+eps.xyy) - sceneSDF(pos-eps.xyy),
 	sceneSDF(pos+eps.yxy) - sceneSDF(pos-eps.yxy),
@@ -220,7 +241,7 @@ float raymarch (in float3 eye, in float3 dir)
 {
 	float t = 0.0;
 	float dist = .1;
-	for (uint i = 0 ; i < 1024 ; i++)
+	for (uint i = 0 ; i < 512 ; i++)
 	{	
 		if(dist < EPSILON || dist > MAX_DIST) break;
 		dist = sceneSDF (eye + dir*t);
@@ -266,11 +287,19 @@ GBuffer PS(VS_OUT input)
     p1.xyz += 0.250 * x * sin(  8.0  * p1.yzx +time * 10.2  * 1 );
     p1.xyz += 0.050 * x * sin( 16.0  * p1.yzx -time * 14.3  * 1 );
 
-	if( -sphere(p1) < .001 ){
+//	if( -sphere(p1) < .001 ){
+//		mID = 0;
+//	} 
+//	else if( sphereD(p,3) < .001 ){
+//		mID = 1;
+//	}
+	
+	
+	if( sphere(p1) < .001 ){
+		 mID = 1;
+	}
+	else{
 		mID = 0;
-	} 
-	else if( sphereD(p,3) < .001 ){
-		mID = 1;
 	}
 	
 	float4 PosWVP = mul(float4(p.xyz,1),tVP);
@@ -280,6 +309,8 @@ GBuffer PS(VS_OUT input)
 //	output.uv = CubicUV(p.xyz, normal);
 	output.uv = 0;
 	output.depth = PosWVP.z/PosWVP.w;
+	
+//	output.ao = calcAO(p, normal);
 	
 	return output;
 }
