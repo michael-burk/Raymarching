@@ -23,7 +23,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="645" top="1095" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Color Input" slicecount="1" visible="1" values="|1.00000,0.29841,0.57246,1.00000|">
+   <PIN pinname="Color Input" slicecount="1" visible="1" values="|1.00000,0.24002,0.82933,1.00000|">
    </PIN>
    <PIN pinname="Descriptive Name" slicecount="1" values="|Global Reflection Color|">
    </PIN>
@@ -293,7 +293,7 @@
    </PIN>
    <PIN pinname="Color" slicecount="1" visible="1" values="|0.97590,0.24058,0.72339,1.00000|">
    </PIN>
-   <PIN pinname="FOV" slicecount="1" values="0.17">
+   <PIN pinname="FOV" slicecount="1" values="0.2">
    </PIN>
    <PIN pinname="Range" slicecount="1" values="8">
    </PIN>
@@ -327,7 +327,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="2850" top="2955" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Color Input" slicecount="1" visible="1" values="|1.00000,1.00000,1.00000,1.00000|">
+   <PIN pinname="Color Input" slicecount="1" visible="1" values="|1.00000,0.18721,0.23560,1.00000|">
    </PIN>
    </NODE>
    <LINK srcnodeid="236" srcpinname="Color Output" dstnodeid="233" dstpinname="Color">

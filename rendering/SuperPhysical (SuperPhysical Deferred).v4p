@@ -663,6 +663,12 @@
    </PIN>
    <PIN pinname="Transform In" visible="1" slicecount="1" values="||">
    </PIN>
+   <PIN pinname="GBufferTexCd" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="GBufferPos" visible="1">
+   </PIN>
+   <PIN pinname="GBufferNorm" visible="1">
+   </PIN>
    </NODE>
    <LINK srcnodeid="314" srcpinname="Texture Array Out" dstnodeid="588" dstpinname="SpotTex" linkstyle="Bezier">
    <LINKPOINT x="13755" y="8003">
@@ -721,12 +727,6 @@
    </LINKPOINT>
    </LINK>
    <LINK srcnodeid="422" srcpinname="Buffer" dstnodeid="588" dstpinname="useTex" linkstyle="PolyLine">
-   </LINK>
-   <LINK srcnodeid="394" srcpinname="Output Node" dstnodeid="588" dstpinname="GBufferTexCd" linkstyle="PolyLine">
-   </LINK>
-   <LINK srcnodeid="393" srcpinname="Output Node" dstnodeid="588" dstpinname="GBufferNorm" linkstyle="PolyLine">
-   </LINK>
-   <LINK srcnodeid="392" srcpinname="Output Node" dstnodeid="588" dstpinname="GBufferPos" linkstyle="PolyLine">
    </LINK>
    <LINK srcnodeid="578" srcpinname="Texture" dstnodeid="588" dstpinname="CubeMap Refl" linkstyle="Bezier">
    <LINKPOINT x="13380" y="7140">
@@ -793,5 +793,11 @@
    <LINK srcnodeid="644" srcpinname="Textures Out" dstnodeid="588" dstpinname="HeightMap">
    </LINK>
    <LINK srcnodeid="636" srcpinname="Sampler" dstnodeid="300" dstpinname="Input Node">
+   </LINK>
+   <LINK srcnodeid="394" srcpinname="Output Node" dstnodeid="588" dstpinname="GBufferTexCd">
+   </LINK>
+   <LINK srcnodeid="392" srcpinname="Output Node" dstnodeid="588" dstpinname="GBufferPos">
+   </LINK>
+   <LINK srcnodeid="393" srcpinname="Output Node" dstnodeid="588" dstpinname="GBufferNorm">
    </LINK>
    </PATCH>
