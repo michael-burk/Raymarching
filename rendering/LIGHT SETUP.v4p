@@ -23,7 +23,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="645" top="1095" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Color Input" slicecount="1" visible="1" values="|1.00000,0.24002,0.82933,1.00000|">
+   <PIN pinname="Color Input" slicecount="1" visible="1" values="|0.60150,0.60150,0.60150,1.00000|">
    </PIN>
    <PIN pinname="Descriptive Name" slicecount="1" values="|Global Reflection Color|">
    </PIN>
@@ -125,7 +125,7 @@
    </BOUNDS>
    <PIN pinname="Color" visible="1">
    </PIN>
-   <PIN pinname="Scalar" slicecount="1" values="0.25">
+   <PIN pinname="Scalar" slicecount="1" values="0.15">
    </PIN>
    <PIN pinname="Output" visible="1">
    </PIN>
@@ -285,23 +285,23 @@
    </PIN>
    <PIN pinname="Helper" slicecount="1" values="1">
    </PIN>
-   <PIN pinname="Distance" slicecount="1" values="2.5">
+   <PIN pinname="Distance" slicecount="1" values="3">
    </PIN>
-   <PIN pinname="Pitch" slicecount="1" values="0.16">
+   <PIN pinname="Pitch" slicecount="1" values="0.34">
    </PIN>
-   <PIN pinname="Yaw" slicecount="1" visible="1" values="-1.3">
+   <PIN pinname="Yaw" slicecount="1" visible="1" values="-0.64">
    </PIN>
    <PIN pinname="Color" slicecount="1" visible="1" values="|0.97590,0.24058,0.72339,1.00000|">
    </PIN>
-   <PIN pinname="FOV" slicecount="1" values="0.2">
+   <PIN pinname="FOV" slicecount="1" values="0.17">
    </PIN>
-   <PIN pinname="Range" slicecount="1" values="8">
+   <PIN pinname="Range" slicecount="1" values="6">
    </PIN>
    <PIN pinname="Enabled" slicecount="1" values="1">
    </PIN>
    <PIN pinname="LightIntensity" slicecount="1" values="2">
    </PIN>
-   <PIN pinname="Shadow" visible="1">
+   <PIN pinname="Shadow" visible="1" slicecount="1" values="||">
    </PIN>
    </NODE>
    <LINK srcnodeid="233" srcpinname="SpotLights" dstnodeid="231" dstpinname="SpotLightSettings">
@@ -320,16 +320,62 @@
    <PIN pinname="LightBleedingLimit" slicecount="1" values="0">
    </PIN>
    </NODE>
-   <LINK srcnodeid="234" srcpinname="Output" dstnodeid="233" dstpinname="Shadow">
-   </LINK>
    <NODE nodename="IOBox (Color)" componentmode="InABox" id="236">
    <BOUNDS type="Box" left="2850" top="2955" width="2250" height="480">
    </BOUNDS>
    <BOUNDS type="Node" left="2850" top="2955" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Color Input" slicecount="1" visible="1" values="|1.00000,0.18721,0.23560,1.00000|">
+   <PIN pinname="Color Input" slicecount="1" visible="1" values="|0.28035,0.00000,0.30955,1.00000|">
    </PIN>
    </NODE>
    <LINK srcnodeid="236" srcpinname="Color Output" dstnodeid="233" dstpinname="Color">
+   </LINK>
+   <NODE systemname="PointLight (SuperPhysical Light)" filename="%VVVV%\packs\SuperPhysical\nodes\vl\VVVV.Value.SuperPhysical.vl" nodename="PointLight (SuperPhysical Light)" componentmode="Hidden" id="237">
+   <BOUNDS type="Node" left="4215" top="1605" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="SpotLights" visible="1">
+   </PIN>
+   <PIN pinname="PosXYZ" visible="1">
+   </PIN>
+   <PIN pinname="Enabled" slicecount="1" values="1">
+   </PIN>
+   <PIN pinname="Color" visible="1">
+   </PIN>
+   <PIN pinname="Shadow" visible="1" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="LightIntensity" slicecount="1" values="1.01">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="237" srcpinname="SpotLights" dstnodeid="231" dstpinname="PointLightSettings">
+   </LINK>
+   <NODE nodename="IOBox (Value Advanced)" componentmode="InABox" id="238">
+   <BOUNDS type="Box" left="4215" top="495" width="795" height="720">
+   </BOUNDS>
+   <BOUNDS type="Node" left="4215" top="495" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" slicecount="3" visible="1" values="-0.39,-0.17,0.45">
+   </PIN>
+   <PIN pinname="Units" slicecount="1" values="||">
+   </PIN>
+   <PIN pinname="Precision" slicecount="1" values="4">
+   </PIN>
+   <PIN pinname="Vector Size" slicecount="1" values="3">
+   </PIN>
+   <PIN pinname="Rows" slicecount="1" values="3">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="238" srcpinname="Y Output Value" dstnodeid="237" dstpinname="PosXYZ">
+   </LINK>
+   <NODE nodename="IOBox (Color)" componentmode="InABox" id="239">
+   <BOUNDS type="Box" left="5265" top="240" width="2250" height="480">
+   </BOUNDS>
+   <BOUNDS type="Node" left="5265" top="240" width="0" height="0">
+   </BOUNDS>
+   <PIN pinname="Color Input" slicecount="1" visible="1" values="|1.00000,1.00000,1.00000,1.00000|">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="239" srcpinname="Color Output" dstnodeid="237" dstpinname="Color">
+   </LINK>
+   <LINK srcnodeid="234" srcpinname="Output" dstnodeid="233" dstpinname="Shadow">
    </LINK>
    </PATCH>

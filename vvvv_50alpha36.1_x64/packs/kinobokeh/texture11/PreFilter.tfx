@@ -1,0 +1,120 @@
+//
+// Kino/Bokeh - Depth of field effect
+//
+// Copyright (C) 2016 Unity Technologies
+// Copyright (C) 2015 Keijiro Takahashi
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+//#define PREFILTER_LUMA_WEIGHT;
+//#include "Common.tfx"
+Texture2D texture2d : PREVIOUS;
+
+Texture2D _CameraDepthTexture;
+Texture2D depth;
+
+SamplerState linearSampler
+{
+    Filter = MIN_MAG_MIP_POINT;
+    AddressU = Clamp;
+    AddressV = Clamp;
+};
+
+struct psInput
+{
+	float4 p : SV_Position;
+	float2 uv : TEXCOORD0;
+};
+
+float2 MainTex_TexelSize;
+
+// Camera parameters
+float dist;
+float LensCoeff = 0.05;  // f^2 / (N * (S1 - f) * film_width * 2)
+
+StructuredBuffer<float> distBuffer;
+StructuredBuffer<float> LensCoeffBuffer;
+
+float MaxCoC = 0.0100;
+float RcpMaxCoC = 1;
+
+// Max between three components
+half max3(half3 xyz) { return max(xyz.x, max(xyz.y, xyz.z)); }
+
+// Approximates luminance from an RGB value
+float CalcLuminance(float3 color)
+{
+    return max(dot(color, float3(0.299f, 0.587f, 0.114f)), 0.0001f);
+}
+
+// Fragment shader: Downsampling, prefiltering and CoC calculation
+half4 frag_Prefilter(psInput i) : SV_Target
+{
+    // Sample source colors.
+    float3 duv = MainTex_TexelSize.xyx * float3(0.5, 0.5, -0.5) ;
+    half3 c0 = clamp(texture2d.Sample(linearSampler, i.uv - duv.xy).rgb, 0, 2);
+    half3 c1 = clamp(texture2d.Sample(linearSampler, i.uv - duv.zy).rgb, 0, 2);
+    half3 c2 = clamp(texture2d.Sample(linearSampler, i.uv + duv.zy).rgb, 0, 2);
+    half3 c3 = clamp(texture2d.Sample(linearSampler,  i.uv + duv.xy).rgb, 0, 2);
+	
+	float2 uvAlt = i.uv;
+    // Sample linear depths.
+    float d0 = _CameraDepthTexture.Sample(linearSampler, uvAlt - duv.xy).r;
+    float d1 = _CameraDepthTexture.Sample(linearSampler, uvAlt - duv.zy).r;
+    float d2 = _CameraDepthTexture.Sample(linearSampler, uvAlt + duv.zy).r;
+    float d3 = _CameraDepthTexture.Sample(linearSampler, uvAlt + duv.xy).r;
+	
+	
+    float4 depths = float4(d0, d1, d2, d3);
+
+    // Calculate the radiuses of CoCs at these sample points.
+    float4 cocs = (depths - distBuffer[0]) * LensCoeffBuffer[0] / depths + .00001;
+    cocs = clamp(cocs, -MaxCoC, MaxCoC);
+
+    // Premultiply CoC to reduce background bleeding.
+    float4 weights = saturate(abs(cocs) * RcpMaxCoC);
+	
+    // Apply luma weights to reduce flickering.
+    // Inspired by goo.gl/j1fhLe goo.gl/mfuZ4h
+    weights.x *= 1 / (max3(c0) + 1);
+    weights.y *= 1 / (max3(c1) + 1);
+    weights.z *= 1 / (max3(c2) + 1);
+    weights.w *= 1 / (max3(c3) + 1);
+	
+    // Weighted average of the color samples
+    float3 avg = (c0 * weights.x + c1 * weights.y + c2 * weights.z + c3 * weights.w);
+ 	avg = avg/dot(weights, 1); 
+	
+    // Output CoC = average of CoCs
+    half coc = dot(cocs, 0.25);
+
+    // Premultiply CoC again.
+	avg *= smoothstep(0, MainTex_TexelSize.y * 2, abs(coc));
+    return half4(avg, coc);
+
+}
+
+technique10 Process
+{
+	pass P0<string format="R16G16B16A16_Float"; bool mips=true;>
+	{
+		SetPixelShader(CompileShader(ps_4_0,frag_Prefilter()));
+	}
+}

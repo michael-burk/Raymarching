@@ -853,7 +853,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="465" top="7005" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="1,0.75">
+   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="1,1">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -1036,8 +1036,22 @@
    </NODE>
    <LINK srcnodeid="471" srcpinname="Y Output Value" dstnodeid="74" dstpinname="Apply">
    </LINK>
-   <LINK srcnodeid="42" srcpinname="Texture Out" dstnodeid="469" dstpinname="Texture In">
-   </LINK>
    <LINK srcnodeid="469" srcpinname="Pointer" dstnodeid="420" dstpinname="Y Input Value">
+   </LINK>
+   <NODE systemname="HSCB (DX11.TextureFX)" filename="%VVVV%\packs\dx11\nodes\texture11\Filter\HSCB.tfx" nodename="HSCB (DX11.TextureFX)" componentmode="Hidden" id="472">
+   <BOUNDS type="Node" left="2640" top="540" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Texture In" visible="1">
+   </PIN>
+   <PIN pinname="Texture Out" visible="1">
+   </PIN>
+   <PIN pinname="Contrast" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="Brightness" slicecount="1" values="0.5">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="42" srcpinname="Texture Out" dstnodeid="472" dstpinname="Texture In">
+   </LINK>
+   <LINK srcnodeid="472" srcpinname="Texture Out" dstnodeid="469" dstpinname="Texture In">
    </LINK>
    </PATCH>

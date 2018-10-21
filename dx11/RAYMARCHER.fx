@@ -209,7 +209,12 @@ float sceneSDF (float3 p)
 	
 //	return fOpIntersectionStairs(a,b,.03,5);
 //	return smin( fOpIntersectionChamfer(a,b,.005), box(p+float3(0,.5,0), float3(2,.1,2)),.3 );
+
+	
 	return smin( smin(a,b,.1), box(p+float3(0,.5,0), float3(1,.025,1)), .1) * .06;
+	
+//	return smin( smin(a,b,.1), box(p+float3(0,.5,0), float3(1,.025,1)), .1);
+	
 //	return smin(a,b,.1	);
 //	return fOpUnionStairs(a,b,.05,5);
 //	return max( box(opTwist(p*2),float3(1,1,1))*.1,-box(p+mouse,myBox));

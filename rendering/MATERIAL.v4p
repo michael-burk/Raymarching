@@ -777,7 +777,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="2190" top="6690" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="1,1">
+   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="1,0.36">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -853,7 +853,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="465" top="7005" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="1,0.85">
+   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="1,1">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -993,9 +993,9 @@
    </PIN>
    </NODE>
    <NODE id="42" systemname="FileTexture (DX11 2d.Pooled)" filename="%VVVV%\packs\dx11\nodes\plugins\base\VVVV.DX11.Nodes.dll" nodename="FileTexture (DX11 2d.Pooled)" componentmode="Hidden">
-   <BOUNDS type="Node" left="1515" top="1395" width="100" height="100">
+   <BOUNDS type="Node" left="1380" top="540" width="100" height="100">
    </BOUNDS>
-   <BOUNDS type="Box" left="1515" top="1395">
+   <BOUNDS type="Box" left="1380" top="540">
    </BOUNDS>
    <PIN pinname="Filename" slicecount="1" values="..\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\albedo\streaked-marble-albedo2.png">
    </PIN>
@@ -1036,8 +1036,50 @@
    </NODE>
    <LINK srcnodeid="471" srcpinname="Y Output Value" dstnodeid="74" dstpinname="Apply">
    </LINK>
-   <LINK srcnodeid="42" srcpinname="Texture Out" dstnodeid="469" dstpinname="Texture In">
-   </LINK>
    <LINK srcnodeid="469" srcpinname="Pointer" dstnodeid="420" dstpinname="Y Input Value">
+   </LINK>
+   <NODE systemname="HSCB (DX11.TextureFX)" filename="%VVVV%\packs\dx11\nodes\texture11\Filter\HSCB.tfx" nodename="HSCB (DX11.TextureFX)" componentmode="Hidden" id="472">
+   <BOUNDS type="Node" left="1665" top="1155" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Texture In" visible="1">
+   </PIN>
+   <PIN pinname="Texture Out" visible="1">
+   </PIN>
+   <PIN pinname="Contrast" slicecount="1" values="2">
+   </PIN>
+   <PIN pinname="Brightness" slicecount="1" values="0.5">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="42" srcpinname="Texture Out" dstnodeid="472" dstpinname="Texture In">
+   </LINK>
+   <NODE systemname="Cons (DX11.Texture 2d)" filename="%VVVV%\packs\dx11\nodes\plugins\base\VVVV.DX11.Nodes.dll" nodename="Cons (DX11.Texture 2d)" componentmode="Hidden" id="473">
+   <BOUNDS type="Node" left="1680" top="1725" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="1680" top="1725" width="3000" height="3000">
+   </BOUNDS>
+   <PIN pinname="Input 2" visible="1">
+   </PIN>
+   <PIN pinname="Input 1" visible="1">
+   </PIN>
+   <PIN pinname="Output" visible="1">
+   </PIN>
+   </NODE>
+   <NODE id="474" systemname="FileTexture (DX11 2d.Pooled)" filename="%VVVV%\packs\dx11\nodes\plugins\base\VVVV.DX11.Nodes.dll" nodename="FileTexture (DX11 2d.Pooled)" componentmode="Hidden">
+   <BOUNDS type="Node" left="2745" top="660" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="2745" top="660">
+   </BOUNDS>
+   <PIN pinname="Filename" slicecount="1" values="..\vvvv_50alpha36.1_x64\packs\SuperPhysical\assets\materials\metallic\Copper-scuffed_metallic.png">
+   </PIN>
+   <PIN pinname="Texture Out" visible="1">
+   </PIN>
+   <PIN pinname="Reload" slicecount="1" values="0">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="473" srcpinname="Output" dstnodeid="469" dstpinname="Texture In">
+   </LINK>
+   <LINK srcnodeid="472" srcpinname="Texture Out" dstnodeid="473" dstpinname="Input 2">
+   </LINK>
+   <LINK srcnodeid="474" srcpinname="Texture Out" dstnodeid="473" dstpinname="Input 1">
    </LINK>
    </PATCH>
