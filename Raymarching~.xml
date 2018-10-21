@@ -69,7 +69,7 @@
    </BOUNDS>
    <BOUNDS type="Node" left="5025" top="2130" width="0" height="0">
    </BOUNDS>
-   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="800,800">
+   <PIN pinname="Y Input Value" slicecount="2" visible="1" values="512,512">
    </PIN>
    <PIN pinname="Units" slicecount="1" values="||">
    </PIN>
@@ -187,8 +187,6 @@
    </PIN>
    <PIN pinname="Sampler State" visible="1" slicecount="1" values="||">
    </PIN>
-   <PIN pinname="time" visible="1" slicecount="1" values="2.01179378892118">
-   </PIN>
    </NODE>
    <LINK srcnodeid="3" srcpinname="Geometry Out" dstnodeid="32" dstpinname="Geometry">
    </LINK>
@@ -199,6 +197,8 @@
    </LINKPOINT>
    <LINKPOINT x="6240" y="3675">
    </LINKPOINT>
+   </LINK>
+   <LINK srcnodeid="22" srcpinname="Position Out" dstnodeid="32" dstpinname="time">
    </LINK>
    <LINK srcnodeid="32" srcpinname="Layer" dstnodeid="1" dstpinname="Layer">
    </LINK>

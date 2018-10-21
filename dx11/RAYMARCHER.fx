@@ -165,7 +165,7 @@ float raymarch (in float3 eye, in float3 dir)
 {
 	float t = 0.0;
 	float dist = .1;
-	for (uint i = 0 ; i < 1024 ; i++)
+	for (uint i = 0 ; i < 512 ; i++)
 	{	
 		
 		if(dist < EPSILON || dist > MAX_DIST) break;
@@ -204,14 +204,7 @@ float4 PS(VS_OUT input): SV_Target
 	float fog = max(1 - 1/(1+dist*dist*.15),.0);
 	float occ = 1;
 	occ = calcAO( p, normal);
-//	occ = occ*occ;
 
-//	float not_grid = box(p);
-//	if(not_grid > .01)
-//	{
-//		col.rgb *= saturate(abs(frac(not_grid*10)*2-1)*10);
-//	}
-	
 	// Avoid artifacts for infinite distances
 //	if(abs(map(p)) > .1) discard;
 //	if(abs(map(p)) > .1) col.xyz = (1 - fog)*p;
@@ -225,13 +218,7 @@ float4 PS(VS_OUT input): SV_Target
 	float vdn = -saturate(dot(reflVect,normal));
 	float fresRefl = KrMin + (Kr-KrMin) * pow(1-abs(vdn),FresExp);	
 	
-	
-//	col = lerp(float4(.5,.5,.5,0)+float4(min(normal,0),1)+fresRefl*float4(1,0,0,0),float4(.5,0,1,0),fog);
 	col = lerp((float4(.5,.5,.5,0)+fresRefl*float4(.5,.5,1,0))*occ,float4(.8,.8,1,0),fog);
-
-//	col = fog;
-	
-//	return  lerp(float4(1,1,1,1),float4(0,0,0,1),edge);
 
     return saturate(col);
 }
